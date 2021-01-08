@@ -10,11 +10,6 @@ const sentinel = false
 
 const dotenv = require('dotenv').config();
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-
-
 function apiCall(limit, offset, sentinel){
   // 1k results = ~3hrs data (5 api calls...)
   // 8k results = ~24hrs data (40 api calls...)
