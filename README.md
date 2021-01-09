@@ -5,6 +5,20 @@ Also includes docker-compose for bootstrapping a local database.
 
 .env file is used for storing DB connection details as well as API endpoint.
 
+## DB Production - Heroku Setup
+
+Useful Commands
+
+```
+heroku login
+heroku pg:info -a cnc-site
+heroku pg:psql -a cnc-site
+
+#to attach existing postgres to this separate running program on Heroku
+heroku addons:attach postgresql-dbname -a cnc-db-cron
+```
+
+
 ## Docker Compose - Local DB Setup
 
 Launch a PSQL docker image exposed on port 5432 and setup with provided scripts

@@ -3,12 +3,6 @@ const dotenv = require('dotenv').config();
 const DB = require('./utils/dbQueries.js');
 const parser = require('./utils/dataFilter.js').dataUploadFilter;
 
-// validating we can write from the DB
-// DB.addMatches(1610143912, 96.35, "Rambo", "Nod", "Crexis", "GDI", "AOD Gaming", "monkey_in_the_middle", "placeholderreplay", 3)
-// DB.addTotal(1416650)
-// DB.getLatestTotal();
-
-//
 function getCurrentMatchesCount(){
   return axios.get(
     `${process.env.ENDPOINT}`)
@@ -60,4 +54,5 @@ function CronScrape(){
   })
 }
 
-CronScrape()
+// CronScrape()
+getCurrentMatchesCount().then(data => console.log(data))
