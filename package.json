@@ -11,7 +11,7 @@
     "pg": "^8.5.1"
   },
   "scripts": {
-    "start": "nodemon petroglyph_scraper.js",
+    "start": "node --trace-warnings cronjob.js",
     "test": "node utils/dataFilter.js",
     "cron": "node --trace-warnings cronjob.js"
   }
