@@ -1,7 +1,6 @@
 const DB = require('./dbQueries.js');
 const dotenv = require('dotenv').config();
 const sampleData = require('./singleObject.js').sampleData
-// const groupData = require('./multipleObject.js').largerData
 
 function testPut(){
   DB.addMatches(1610040909, 98.768987, 'Danku', 'GDI', 'KHANOMANCER', 'Nod', 'Danku', 'monkey_in_the_middle', 'MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP.745903.1482737.1609444814.0.36.Replay', 4)
@@ -11,15 +10,6 @@ const testGetAll = async () => {
   const data = await DB.getAllMatches()
   return data
 }
-// promise - logs results within
-// const results = testGetAll()
-
-
-// console.log(`DATA: ${JSON.stringify(sampleData)}`)
-
-// sampleData[0] is representative of array of similar results, key functions can be mapped later...
-// console.log(Object.keys(sampleData[0].matches))
-// let matches = sampleData[0].matches
 
 // official season 3 map names
 let ladderMapNames = [
@@ -72,9 +62,7 @@ function ladderMapParserS4(mapname){
 }
 
 function dataUploadFilter(apiMatches){
-  apiMatches.map(matches =>
-    matches.matches.map(singleMatch => {
-
+    apiMatches.matches.map(singleMatch => {
       // season 3
       // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2
       // console.log(`EXTRA MATCH SETTINGS: ${JSON.stringify(singleMatch.extramatchsettings)}`)
@@ -94,6 +82,7 @@ function dataUploadFilter(apiMatches){
         let map = ladderMapParserS3(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
         let season = 3 //hardcoded
+        // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
         DB.addMatches(
           starttime,
           matchDuration,
@@ -126,7 +115,8 @@ function dataUploadFilter(apiMatches){
         let map = ladderMapParserS4(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
         let season = 4 //hardcoded
-        DB.addMatches(
+        // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
+        DB.addMatchesAsync(
           starttime,
           matchDuration,
           player1Name,
@@ -141,12 +131,11 @@ function dataUploadFilter(apiMatches){
       }
     }
   )
-)
 }
 
 
 // try with group data... our sample data only has RA data smh...
-dataUploadFilter(sampleData)
+// dataUploadFilter(sampleData)
 
 module.exports = {
   dataUploadFilter

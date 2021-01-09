@@ -12,6 +12,8 @@
   },
   "scripts": {
     "start": "nodemon petroglyph_scraper.js",
-    "test": "node test.js"
+    "test": "node test.js",
+    "dbquery": "nodemon dbQueries.js",
+    "cron": "node cronjob.js"
   }
 }

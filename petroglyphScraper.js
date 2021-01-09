@@ -3,12 +3,10 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
-
-const DB = require('./dbQueries.js');
-const parser = require('./test.js').dataUploadFilter;
-const sentinel = false
-
 const dotenv = require('dotenv').config();
+const DB = require('./utls/dbQueries.js');
+const parser = require('./utils/dataFilter.js').dataUploadFilter;
+const sentinel = false
 
 function apiCall(limit, offset, sentinel){
   // 1k results = ~3hrs data (5 api calls...)
@@ -28,7 +26,16 @@ function apiCall(limit, offset, sentinel){
   )
 }
 
-apiCall(200, 0)
+// hourly
+function apiHourlyCrawl(epochCutoffTime){
+  let recentTime = 0
+  while(epochCutoffTime > recentTime){
+
+  }
+  function res(){ return axios.get(`${process.ENDPOINT}?limit=${limit}&offset=${offset}`).then((response) => response.data) }
+
+}
+// apiCall(200, 0)
 
 // 1609975763 Wednesday, January 6, 2021 23:29:23
 // 1609964053 Wednesday, January 6, 2021 20:14:13

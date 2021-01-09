@@ -13,3 +13,9 @@ CREATE TABLE matches(
   replay varchar(255) NOT NULL,
   season INT NOT NULL
 );
+
+CREATE TABLE totals(
+  index serial,
+  date_inserted timestamp NOT NULL DEFAULT NOW(),
+  total INT NOT NULL
+)
