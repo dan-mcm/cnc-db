@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv').config();
 
-const connectionString = `${process.env.DBSTRING}`
+const connectionString = `${process.env.DATABASE_URL}`
 // for local...
 // const pool = new Pool({
 //   user: process.env.DB_USER,
@@ -12,7 +12,7 @@ const connectionString = `${process.env.DBSTRING}`
 // });
 //for prod...
 const pool = new Pool({
-  connectionString: process.env.DBSTRING,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
