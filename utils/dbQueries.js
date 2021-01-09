@@ -1,25 +1,22 @@
-// see https://github.com/dan-mcm/rate-my-therapist/blob/master/server/dbQueries.js as useful reference
-
 const { Pool } = require('pg');
-// eslint-disable-next-line no-unused-vars
 const dotenv = require('dotenv').config();
 
 const connectionString = `${process.env.DBSTRING}`
 // for local...
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
-});
-//for prod...
 // const pool = new Pool({
-//   connectionString: process.env.DBSTRING,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT
 // });
+//for prod...
+const pool = new Pool({
+  connectionString: process.env.DBSTRING,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err)
