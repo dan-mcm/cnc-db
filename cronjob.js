@@ -54,5 +54,4 @@ function CronScrape(){
   })
 }
 
-// CronScrape()
-getCurrentMatchesCount().then(data => console.log(data))
+CronScrape()
