@@ -62,6 +62,7 @@ function ladderMapParserS4(mapname){
 }
 
 function dataUploadFilter(apiMatches){
+    // console.log(`ENTERED DATA UPLOAD FILTER`)
     apiMatches.matches.map(singleMatch => {
       // season 3
       // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2
@@ -116,7 +117,7 @@ function dataUploadFilter(apiMatches){
         let replay = singleMatch.cdnurl
         let season = 4 //hardcoded
         // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
-        DB.addMatchesAsync(
+        DB.addMatches(
           starttime,
           matchDuration,
           player1Name,

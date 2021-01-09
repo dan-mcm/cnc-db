@@ -59,6 +59,7 @@ function getLatestTotal(){
 }
 
 function addMatches(starttime, matchDuration, player1Name, player1Faction, player2Name, player2Faction, result, map, replay, season) {
+  // console.log(`IN ADD MATCHES`)
   return pool
     .connect()
     .then(client => {
@@ -79,21 +80,28 @@ function addMatches(starttime, matchDuration, player1Name, player1Faction, playe
 };
 
 const addMatchesAsync = async function(starttime, matchDuration, player1Name, player1Faction, player2Name, player2Faction, result, map, replay, season) {
-  const res = await pool.query(
-    `INSERT INTO matches (starttime, match_duration, player1_name, player1_faction, player2_name, player2_faction, result, map, replay, season)
-    VALUES ('${starttime}', '${matchDuration}', '${player1Name}', '${player1Faction}', '${player2Name}', '${player2Faction}', '${result}', '${map}', '${replay}', '${season}')`,
-    (err, res) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(res);
-      }
+  // console.log(`IN ADD MATCHESASYNC`)
+  const client = await pool.connect()
+  try{
+    const res = await pool.query(
+      `INSERT INTO matches (starttime, match_duration, player1_name, player1_faction, player2_name, player2_faction, result, map, replay, season)
+      VALUES ('${starttime}', '${matchDuration}', '${player1Name}', '${player1Faction}', '${player2Name}', '${player2Faction}', '${result}', '${map}', '${replay}', '${season}')`,
+      (err, res) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(res);
+          return res;
+        }
 
-      // Syntax used to hide error logging of pool end > once
-      // pool.end(() => {});
-    }
-  );
-  return res;
+        // Syntax used to hide error logging of pool end > once
+        // pool.end(() => {});
+      }
+    );
+    console.log(`SUCCESS!!! ${res}`)
+  } finally {
+    client.release()
+  }
 };
 
 function addTotal(total) {

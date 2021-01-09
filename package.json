@@ -12,8 +12,7 @@
   },
   "scripts": {
     "start": "nodemon petroglyph_scraper.js",
-    "test": "node test.js",
-    "dbquery": "nodemon dbQueries.js",
-    "cron": "node cronjob.js"
+    "test": "node utils/dataFilter.js",
+    "cron": "node --trace-warnings cronjob.js"
   }
 }

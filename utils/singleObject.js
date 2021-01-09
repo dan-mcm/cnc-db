@@ -1,5 +1,4 @@
 const sampleData =
-[
   {
     "matches": [
       {
@@ -18852,7 +18851,6 @@ const sampleData =
       }
     ]
   }
-]
 
   module.exports = {
     sampleData

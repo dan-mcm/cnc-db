@@ -14,11 +14,13 @@ function getCurrentMatchesCount(){
 }
 
 function FirstScrape(limit){
-  return axios.get(`${process.env.ENDPOINT}?limit=${limit}`).then(res => res.data)
+  // console.log(`RUNNING FirstScrapes ${Math.floor(limit)}`)
+  return axios.get(`${process.env.ENDPOINT}?limit=${Math.floor(limit)}`).then(res => parser(res.data)).catch(err => console.log(err))
 }
 
 function nScrapes(limit, offset){
-  return axios.get(`${process.env.ENDPOINT}?limit=${limit}&offset=${offset}`).then(res => res.data)
+  // console.log(`RUNNING nScrapes ${Math.floor(limit)} ${offset}`)
+  return axios.get(`${process.env.ENDPOINT}?limit=${Math.floor(limit)}&offset=${offset}`).then(res => parser(res.data)).catch(err => console.log(err))
 }
 
 function CronScrape(){
@@ -30,7 +32,7 @@ function CronScrape(){
   .then(matches => {
     // need to make sure this is added to db after difference count to prevent race condition
     console.log(`Time: ${Date.now()} LatestDBEntry ${matches[1]}; LatestLiveMatch: ${matches[0]}`)
-    DB.addTotal(matches[0]) // is this working?
+    DB.addTotal(matches[0])
     let difference = matches[0] - matches[1]
     return difference
   })
@@ -51,7 +53,7 @@ function CronScrape(){
         currentDiff -= 200*(iterations%1)
       }
     }
-  })
+  }).catch(err => console.log(err))
 }
 
 CronScrape()
