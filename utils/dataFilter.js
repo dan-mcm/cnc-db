@@ -73,13 +73,19 @@ function dataUploadFilter(apiMatches){
       && singleMatch.names.length === 2
       && ladderMapNames.some(map => singleMatch.mapname.includes(map))){
         // console.log(Object.keys(singleMatch))
+        let teamNumber = singleMatch.names[0]
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
-        let player1Name = unescape(singleMatch.names[0])
+        let player1Name = singleMatch.names[0]
         let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
-        let player2Name = unescape(singleMatch.names[1])
+        let player2Name = singleMatch.names[1]
         let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
-        let result = singleMatch.names[singleMatch.winningteamid]
+
+        let winningTeamID = singleMatch.winningteamid
+        let player1TeamID = singleMatch.teams[0]
+        let player2TeamID = singleMatch.teams[1]
+        let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
+
         let map = ladderMapParserS3(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
         let season = 3 //hardcoded
@@ -108,11 +114,16 @@ function dataUploadFilter(apiMatches){
         //console.log(Object.keys(singleMatch))
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
-        let player1Name = unescape(singleMatch.names[0])
+        let player1Name = singleMatch.names[0]
         let player1Faction = (singleMatch.factions[0] && singleMatch.factions[0] === 0) ? "GDI" : "Nod"
-        let player2Name = unescape(singleMatch.names[1])
+        let player2Name = singleMatch.names[1]
         let player2Faction = (singleMatch.factions[1] && singleMatch.factions[1] === 0) ? "GDI" : "Nod"
-        let result = singleMatch.names[singleMatch.winningteamid]
+
+        let winningTeamID = singleMatch.winningteamid
+        let player1TeamID = singleMatch.teams[0]
+        let player2TeamID = singleMatch.teams[1]
+        let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
+
         let map = ladderMapParserS4(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
         let season = 4 //hardcoded

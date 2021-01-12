@@ -2899,7 +2899,7 @@ const sampleData =
 
         ],
         "matchduration": 176.606199,
-        "winnin gteamid": 0,
+        "winningteamid": 0,
         "extramatchsettings": {
           "bases": true,
           "crates": false,
@@ -3835,7 +3835,7 @@ const sampleData =
           "custom_map": false,
           "game_speed": 5,
           "tech_level": 6,
-          "or e_regrows": 4,
+          "ore_regrows": 4,
           "product_type": "TD",
           "redeploy_mcv": true,
           "super_weapons": true,
@@ -4005,7 +4005,7 @@ const sampleData =
           "redeploy_mcv": false,
           "super_weapons": true,
           "custom_map_crc": 0,
-          "s hroud_regrows": false,
+          "shroud_regrows": false,
           "starting_units": 0,
           "allow_8_players": false,
           "allow_aftermath": false,
