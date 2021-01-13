@@ -39,7 +39,9 @@ function CronScrape(){
 
   difference.then(difference => {
     let currentDiff = difference
-    let iterations = difference / 200
+    // some games were being missed from the scraping -> additional offset might duplicate DB entires but should help ensure games aren't missed.
+    let offset = 100
+    let iterations = (difference + offset) / 200
     while(iterations > 0){
       if (iterations > 1) {
         // modulus gets the post decimal value
