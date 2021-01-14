@@ -73,7 +73,6 @@ function dataUploadFilter(apiMatches){
       && singleMatch.names.length === 2
       && ladderMapNames.some(map => singleMatch.mapname.includes(map))){
         // console.log(Object.keys(singleMatch))
-        let teamNumber = singleMatch.names[0]
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
@@ -115,9 +114,9 @@ function dataUploadFilter(apiMatches){
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
-        let player1Faction = (singleMatch.factions[0] && singleMatch.factions[0] === 0) ? "GDI" : "Nod"
+        let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
         let player2Name = singleMatch.names[1]
-        let player2Faction = (singleMatch.factions[1] && singleMatch.factions[1] === 0) ? "GDI" : "Nod"
+        let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
 
         let winningTeamID = singleMatch.winningteamid
         let player1TeamID = singleMatch.teams[0]
