@@ -18,7 +18,6 @@ heroku pg:psql -a cnc-site
 heroku addons:attach postgresql-dbname -a cnc-db-cron
 ```
 
-
 ## Docker Compose - Local DB Setup
 
 Launch a PSQL docker image exposed on port 5432 and setup with provided scripts
@@ -44,4 +43,29 @@ DB_PASSWORD=""
 DB_HOST=""
 DB_NAME=""
 DB_PORT=""
+```
+
+## Useful SQL
+
+Deleting Duplicate Rows (not super optimal due to two separate SQL queries)
+```
+WITH cte AS (
+    SELECT
+        starttime,
+        ROW_NUMBER() OVER (
+            PARTITION BY
+                starttime
+            ORDER BY
+                starttime
+        ) row_num
+     FROM
+        matches
+)
+DELETE FROM cte
+WHERE row_num > 1;
+
+DELETE FROM matches a
+WHERE a.ctid <> (SELECT min(b.ctid)
+                 FROM   matches b
+                 WHERE  a.starttime = b.starttime);
 ```

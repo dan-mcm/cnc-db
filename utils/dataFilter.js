@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config();
 const sampleData = require('./singleObject.js').sampleData
 
 function testPut(){
-  DB.addMatches(1610040909, 98.768987, 'Danku', 'GDI', 'KHANOMANCER', 'Nod', 'Danku', 'monkey_in_the_middle', 'MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP.745903.1482737.1609444814.0.36.Replay', 4)
+  DB.addMatches(1610040909, 98.768987, 'Danku', 'GDI', 'false', 'KHANOMANCER', 'Nod', 'false', 'Danku', 'monkey_in_the_middle', 'MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP.745903.1482737.1609444814.0.36.Replay', 4)
 }
 
 const testGetAll = async () => {
@@ -77,8 +77,11 @@ function dataUploadFilter(apiMatches){
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
         let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
+
         let player2Name = singleMatch.names[1]
         let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[1]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
         let player1TeamID = singleMatch.teams[0]
@@ -94,8 +97,10 @@ function dataUploadFilter(apiMatches){
           matchDuration,
           player1Name,
           player1Faction,
+          player1Random,
           player2Name,
           player2Faction,
+          player2Random,
           result,
           map,
           replay,
@@ -115,8 +120,11 @@ function dataUploadFilter(apiMatches){
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
         let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
+
         let player2Name = singleMatch.names[1]
         let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[0]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
         let player1TeamID = singleMatch.teams[0]
@@ -132,8 +140,10 @@ function dataUploadFilter(apiMatches){
           matchDuration,
           player1Name,
           player1Faction,
+          player1Random,
           player2Name,
           player2Faction,
+          player2Random,
           result,
           map,
           replay,
