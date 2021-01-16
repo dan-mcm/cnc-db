@@ -76,16 +76,19 @@ function dataUploadFilter(apiMatches){
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
-        let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
-        let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
 
-        let player2Name = singleMatch.names[1]
-        let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
-        let player2Random = (singleMatch.wasrandom[1]) ? 1 : 0
-
-        let winningTeamID = singleMatch.winningteamid
         let player1TeamID = singleMatch.teams[0]
         let player2TeamID = singleMatch.teams[1]
+
+        let player1Faction = (singleMatch.factions[player1TeamID] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[player1TeamID]) ? 1 : 0
+
+        let player2Name = singleMatch.names[1]
+        let player2Faction = (singleMatch.factions[player2TeamID] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[player2TeamID]) ? 1 : 0
+
+        let winningTeamID = singleMatch.winningteamid
+
         let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
 
         let map = ladderMapParserS3(singleMatch.mapname) // converting to human readable
@@ -119,16 +122,19 @@ function dataUploadFilter(apiMatches){
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
-        let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
-        let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
 
-        let player2Name = singleMatch.names[1]
-        let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
-        let player2Random = (singleMatch.wasrandom[0]) ? 1 : 0
-
-        let winningTeamID = singleMatch.winningteamid
         let player1TeamID = singleMatch.teams[0]
         let player2TeamID = singleMatch.teams[1]
+
+        let player1Faction = (singleMatch.factions[player1TeamID] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[player1TeamID]) ? 1 : 0
+
+        let player2Name = singleMatch.names[1]
+        let player2Faction = (singleMatch.factions[player2TeamID] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[player2TeamID]) ? 1 : 0
+
+        let winningTeamID = singleMatch.winningteamid
+
         let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
 
         let map = ladderMapParserS4(singleMatch.mapname) // converting to human readable
