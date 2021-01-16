@@ -44,9 +44,10 @@ function CronScrape(){
     let iterations = (difference + offset) / 200
     while(iterations > 0){
       if (iterations > 1) {
-        // modulus gets the post decimal value
+        // modulus gets the post decimal value -> 200*(iterations%1)
+        // rather than use iterations lets just go full limit, should help again with overlapped games
         // floor gives us the full int value
-        nScrapes(200*(iterations%1), 200*Math.floor(iterations))
+        nScrapes(200, 200*Math.floor(iterations))
         iterations -= 1
         currentDiff -= 200*(iterations%1)
       } else if (iterations <= 1){
