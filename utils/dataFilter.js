@@ -59,6 +59,8 @@ function ladderMapParserS4(mapname){
     "UGC_0110000105329996_00000000828943E1_MAPDATA": "canyon_paths",
     "UGC_01100001013FFA5D_0000000081AC4211_MAPDATA": "frosted_hostilities_vertically_mirrored"
   }
+
+  return ladderMaps[mapname]
 }
 
 function dataUploadFilter(apiMatches){
