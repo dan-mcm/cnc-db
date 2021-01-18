@@ -79,19 +79,22 @@ function dataUploadFilter(apiMatches){
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
 
-        let player1TeamID = singleMatch.teams[0]
-        let player2TeamID = singleMatch.teams[1]
+        let player1TeamName = singleMatch.teams[0]
+        let player2TeamName = singleMatch.teams[1]
 
-        let player1Faction = (singleMatch.factions[player1TeamID] === 0) ? "GDI" : "Nod"
-        let player1Random = (singleMatch.wasrandom[player1TeamID]) ? 1 : 0
+        let player1TeamID = singleMatch.players[0]
+        let player2TeamID = singleMatch.players[1]
+
+        let player1Faction = (singleMatch.factions[player1TeamName] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[player1TeamName]) ? 1 : 0
 
         let player2Name = singleMatch.names[1]
-        let player2Faction = (singleMatch.factions[player2TeamID] === 0) ? "GDI" : "Nod"
-        let player2Random = (singleMatch.wasrandom[player2TeamID]) ? 1 : 0
+        let player2Faction = (singleMatch.factions[player2TeamName] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[player2TeamName]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
 
-        let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
+        let result = (winningTeamID === player1TeamName) ? player1Name : player2Name
 
         let map = ladderMapParserS3(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
@@ -100,9 +103,11 @@ function dataUploadFilter(apiMatches){
         DB.addMatches(
           starttime,
           matchDuration,
+          player1ID,
           player1Name,
           player1Faction,
           player1Random,
+          player2ID,
           player2Name,
           player2Faction,
           player2Random,
@@ -125,19 +130,22 @@ function dataUploadFilter(apiMatches){
         let matchDuration = singleMatch.matchduration
         let player1Name = singleMatch.names[0]
 
-        let player1TeamID = singleMatch.teams[0]
-        let player2TeamID = singleMatch.teams[1]
+        let player1TeamName = singleMatch.teams[0]
+        let player2TeamName = singleMatch.teams[1]
 
-        let player1Faction = (singleMatch.factions[player1TeamID] === 0) ? "GDI" : "Nod"
-        let player1Random = (singleMatch.wasrandom[player1TeamID]) ? 1 : 0
+        let player1TeamID = singleMatch.players[0]
+        let player2TeamID = singleMatch.players[1]
+
+        let player1Faction = (singleMatch.factions[player1TeamName] === 0) ? "GDI" : "Nod"
+        let player1Random = (singleMatch.wasrandom[player1TeamName]) ? 1 : 0
 
         let player2Name = singleMatch.names[1]
-        let player2Faction = (singleMatch.factions[player2TeamID] === 0) ? "GDI" : "Nod"
-        let player2Random = (singleMatch.wasrandom[player2TeamID]) ? 1 : 0
+        let player2Faction = (singleMatch.factions[player2TeamName] === 0) ? "GDI" : "Nod"
+        let player2Random = (singleMatch.wasrandom[player2TeamName]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
 
-        let result = (winningTeamID === player1TeamID) ? player1Name : player2Name
+        let result = (winningTeamID === player1TeamName) ? player1Name : player2Name
 
         let map = ladderMapParserS4(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
@@ -146,9 +154,11 @@ function dataUploadFilter(apiMatches){
         DB.addMatches(
           starttime,
           matchDuration,
+          player1TeamID,
           player1Name,
           player1Faction,
           player1Random,
+          player2TeamID,
           player2Name,
           player2Faction,
           player2Random,

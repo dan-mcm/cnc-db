@@ -58,7 +58,7 @@ function getLatestTotal(){
     })
 }
 
-function addMatches(starttime, matchDuration, player1Name, player1Faction, player1Random, player2Name, player2Faction, player2Random, result, map, replay, season) {
+function addMatches(starttime, matchDuration, player1ID, player1Name, player1Faction, player1Random, player2ID, player2Name, player2Faction, player2Random, result, map, replay, season) {
   // console.log(`IN ADD MATCHES`)
   return pool
     .connect()
@@ -66,7 +66,7 @@ function addMatches(starttime, matchDuration, player1Name, player1Faction, playe
       return client
         .query(
           `INSERT INTO matches (starttime, match_duration, player1_name, player1_faction, player1_random, player2_name, player2_faction, player2_random, result, map, replay, season)
-          VALUES ('${starttime}', '${matchDuration}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`
+          VALUES ('${starttime}', '${matchDuration}', '${player1ID}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2ID}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`
         )
         .then(res => {
           client.release()
@@ -79,13 +79,13 @@ function addMatches(starttime, matchDuration, player1Name, player1Faction, playe
     })
 };
 
-const addMatchesAsync = async function(starttime, matchDuration, player1Name, player1Faction, player1Random, player2Name, player2Faction, player2Random, result, map, replay, season) {
+const addMatchesAsync = async function(starttime, matchDuration, player1ID, player1Name, player1Faction, player1Random, player2ID, player2Name, player2Faction, player2Random, result, map, replay, season) {
   // console.log(`IN ADD MATCHESASYNC`)
   const client = await pool.connect()
   try{
     const res = await pool.query(
       `INSERT INTO matches (starttime, match_duration, player1_name, player1_faction, player1_random, player2_name, player2_faction, player2_random, result, map, replay, season)
-      VALUES ('${starttime}', '${matchDuration}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
+      VALUES ('${starttime}', '${matchDuration}', '${player1ID}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2ID}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
       (err, res) => {
         if (err) {
           console.log(err);
