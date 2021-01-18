@@ -5,6 +5,32 @@ Also includes docker-compose for bootstrapping a local database.
 
 .env file is used for storing DB connection details as well as API endpoint.
 
+## Running Script
+
+```
+yarn cron
+```
+
+## Table Schema
+
+The following is an overview of the tables setup for use with this DB.
+
+### **matches** table
+
+Used for storing individual match data between players.
+
+| index | starttime | match_duration | player1_id | player1_name | player1_faction | player1_random | player2_id | player2_name | player2_faction | player2_random | result | map | replay | season |
+| :------------- | :------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |:------------- |
+| 8581 | 1610929378.788002 | 544.160959 | 76561199124368940 | jon | GDI | f | 1008404381514 | JxDHarrell | GDI | f |JxDHarrell | tournament_desert | MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_7_MAP.745903.1577313.1610929385.0.36.Replay | 3 |
+
+### **totals** table
+
+Used for keeping track of value for total games recorded by the API. This is used for offsetting the cronjob scraping.
+
+| index | date_inserted | total |
+| :------------- | :------------- | :------------- |
+| 453 | 2021-01-18 00:51:35.856808 | 1460165 |
+
 ## DB Production - Heroku Setup
 
 Useful Commands
@@ -14,7 +40,7 @@ heroku login
 heroku pg:info -a cnc-site
 heroku pg:psql -a cnc-site
 
-#to attach existing postgres to this separate running program on Heroku
+# to attach existing postgres to this separate running program on Heroku
 heroku addons:attach postgresql-dbname -a cnc-db-cron
 ```
 
