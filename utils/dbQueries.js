@@ -66,7 +66,7 @@ function addMatches(starttime, matchDuration, player1_id, player1Name, player1Fa
       return client
         .query(
           `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
-          VALUES ('${starttime}', '${matchDuration}', '${player1ID}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2ID}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`
+          VALUES ('${starttime}', '${matchDuration}', '${player1_id}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2_id}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`
         )
         .then(res => {
           client.release()
@@ -85,7 +85,7 @@ const addMatchesAsync = async function(starttime, matchDuration, player1_id, pla
   try{
     const res = await pool.query(
       `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
-      VALUES ('${starttime}', '${matchDuration}', '${player1ID}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2ID}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
+      VALUES ('${starttime}', '${matchDuration}', '${player1_id}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2_id}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
       (err, res) => {
         if (err) {
           console.log(err);
