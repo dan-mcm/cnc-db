@@ -103,11 +103,11 @@ function dataUploadFilter(apiMatches){
         DB.addMatches(
           starttime,
           matchDuration,
-          player1ID,
+          player1TeamID,
           player1Name,
           player1Faction,
           player1Random,
-          player2ID,
+          player2TeamID,
           player2Name,
           player2Faction,
           player2Random,
