@@ -13,9 +13,9 @@ function getCurrentMatchesCount(){
     )
 }
 
-function FirstScrape(limit){
+function FirstScrape(){
   // console.log(`RUNNING FirstScrapes ${Math.floor(limit)}`)
-  return axios.get(`${process.env.ENDPOINT}?limit=${Math.floor(limit)}`).then(res => parser(res.data)).catch(err => console.log(err))
+  return axios.get(`${process.env.ENDPOINT}?limit=200`).then(res => parser(res.data)).catch(err => console.log(err))
 }
 
 function nScrapes(limit, offset){
@@ -38,25 +38,24 @@ function CronScrape(){
   })
 
   difference.then(difference => {
-    let currentDiff = difference
+    const currentDiff = difference
     // some games were being missed from the scraping -> additional offset might duplicate DB entires but should help ensure games aren't missed.
-    let offset = 100
+    const offset = 100
     let iterations = (difference + offset) / 200
     while(iterations > 0){
       if (iterations > 1) {
         // modulus gets the post decimal value -> 200*(iterations%1)
         // rather than use iterations lets just go full limit, should help again with overlapped games
-        // floor gives us the full int value
-        nScrapes(200, 200*Math.floor(iterations))
+        // ceil  gives us the full int value rounded up to prevent any lost overlap
+        nScrapes(200, 200*Math.ceil(iterations))
         iterations -= 1
-        currentDiff -= 200*(iterations%1)
       } else if (iterations <= 1){
-        FirstScrape(currentDiff)
+        // maxing limit - might be bug stopping us get some matches in the overlap
+        FirstScrape()
         iterations = 0
-        currentDiff -= 200*(iterations%1)
       }
     }
   }).catch(err => console.log(err))
 }
 
-CronScrape()
+ CronScrape()
