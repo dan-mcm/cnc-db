@@ -71,13 +71,11 @@ function dataUploadFilter(apiMatches){
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
 
-
         let player1TeamID = singleMatch.players[0]
         let player1Name = singleMatch.names[0]
         let player1TeamName = singleMatch.teams[0]
         let player1Faction = (singleMatch.factions[player1TeamName] === 0) ? "GDI" : "Nod"
         let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
-
 
         let player2TeamID = singleMatch.players[1]
         let player2Name = singleMatch.names[1]

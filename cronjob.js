@@ -58,4 +58,4 @@ function CronScrape(){
   }).catch(err => console.log(err))
 }
 
-// CronScrape()
+CronScrape()
