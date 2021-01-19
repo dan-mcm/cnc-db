@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "node --trace-warnings cronjob.js",
-    "test": "node utils/dataFilter.js",
-    "cron": "node --trace-warnings cronjob.js"
+    "cron": "node --trace-warnings cronjob.js",
+    "test": "node utils/dataFilter.js"
   }
 }

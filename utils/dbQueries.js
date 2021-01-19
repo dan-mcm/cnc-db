@@ -1,22 +1,26 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv').config();
 
-const connectionString = `${process.env.DATABASE_URL}`
-// for local...
-// const pool = new Pool({
-//   user: process.env.DB_USER,
-//   host: process.env.DB_HOST,
-//   database: process.env.DB_NAME,
-//   password: process.env.DB_PASSWORD,
-//   port: process.env.DB_PORT
-// });
-//for prod...
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+let pool;
+
+if (process.env.NODE_ENV === 'production') {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT
+  });
+}
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err)

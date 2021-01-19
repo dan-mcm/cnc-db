@@ -1,15 +1,8 @@
 const DB = require('./dbQueries.js');
 const dotenv = require('dotenv').config();
-const sampleData = require('./singleObject.js').sampleData
 
-function testPut(){
-  DB.addMatches(1610040909, 98.768987, 'Danku', 'GDI', 'false', 'KHANOMANCER', 'Nod', 'false', 'Danku', 'monkey_in_the_middle', 'MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP.745903.1482737.1609444814.0.36.Replay', 4)
-}
-
-const testGetAll = async () => {
-  const data = await DB.getAllMatches()
-  return data
-}
+const sampleData = require('../test-data/singleObject.js').sampleData
+const data = require('../test-data/2215to2323.js').data
 
 // official season 3 map names
 let ladderMapNames = [
@@ -77,20 +70,20 @@ function dataUploadFilter(apiMatches){
         // console.log(Object.keys(singleMatch))
         let starttime = singleMatch.starttime
         let matchDuration = singleMatch.matchduration
-        let player1Name = singleMatch.names[0]
 
-        let player1TeamName = singleMatch.teams[0]
-        let player2TeamName = singleMatch.teams[1]
 
         let player1TeamID = singleMatch.players[0]
-        let player2TeamID = singleMatch.players[1]
-
+        let player1Name = singleMatch.names[0]
+        let player1TeamName = singleMatch.teams[0]
         let player1Faction = (singleMatch.factions[player1TeamName] === 0) ? "GDI" : "Nod"
-        let player1Random = (singleMatch.wasrandom[player1TeamName]) ? 1 : 0
+        let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
 
+
+        let player2TeamID = singleMatch.players[1]
         let player2Name = singleMatch.names[1]
+        let player2TeamName = singleMatch.teams[1]
         let player2Faction = (singleMatch.factions[player2TeamName] === 0) ? "GDI" : "Nod"
-        let player2Random = (singleMatch.wasrandom[player2TeamName]) ? 1 : 0
+        let player2Random = (singleMatch.wasrandom[1]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
 
@@ -172,9 +165,8 @@ function dataUploadFilter(apiMatches){
   )
 }
 
-
-// try with group data... our sample data only has RA data smh...
 // dataUploadFilter(sampleData)
+// dataUploadFilter(data)
 
 module.exports = {
   dataUploadFilter
