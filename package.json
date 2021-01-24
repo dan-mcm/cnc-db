@@ -13,8 +13,8 @@
     "utf8": "^3.0.0"
   },
   "scripts": {
-    "start": "node --trace-warnings cronjob.js && node --trace-warning utils/elo.js",
-    "cron": "node --trace-warnings cronjob.js && node --trace-warning utils/elo.js",
+    "start": "node cronjob.js && node utils/elo.js",
+    "cron": "node cronjob.js && node utils/elo.js",
     "test": "node utils/dataFilter.js",
     "justcron": "node cronjob.js",
     "elo": "node utils/elo.js"
