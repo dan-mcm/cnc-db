@@ -14,6 +14,7 @@ yarn cron
 ## Table Schema
 
 The following is an overview of the tables setup for use with this DB.
+You may wish to enable UTF 8 encoding with `SET client_encoding TO 'UTF8';`
 
 ### **matches** table
 
@@ -30,6 +31,22 @@ Used for keeping track of value for total games recorded by the API. This is use
 | index | date_inserted | total |
 | :------------- | :------------- | :------------- |
 | 453 | 2021-01-18 00:51:35.856808 | 1460165 |
+
+### **leaderboard** table
+
+Used for keep our top players data - easier for the frontend to parse.
+
+|index |           player_name            | season |    rank    | position | points | wins | loses | played | winrate|
+|-------|----------------------------------|--------|------------|----------|--------|------|-------|--------|---------|
+|    1 | patrickschenkel                  |      4 | general    |        6 |    984 |    0 |     1 |      1 |       0|
+
+### **elo_history** table
+
+Used for keeping a record of all the elo changes on a per match bais, less compute intensive on frontend to do this here.
+
+|index |     starttime     |  duration   |             player              | player_faction | player_random | player_existing_elo | player_new_elo |             opponent             | opponent_faction | opponent_random | opponent_existing_elo | opponent_new_elo |          map           |                                                        replay                                                         | result | season
+-------|-------------------|-------------|---------------------------------|----------------|---------------|---------------------|----------------|----------------------------------|------------------|-----------------|-----------------------|------------------|------------------------|-----------------------------------------------------------------------------------------------------------------------|--------|--------|
+|    1 |  1610052168.61669 |  312.427709 | myName="sir smart harvester";   | Nod            | t             |                1000 |           1016 | MC RusTy                         | GDI              | t               |                  1000 |              984 | canyon_paths           | https://replays.cnctdra.ea.com/UGC_0110000105329996_00000000828943E1_MAPDATA.745903.1522834.1610052186.0.36.Replay    | f      |      4 |
 
 ## DB Production - Heroku Setup
 

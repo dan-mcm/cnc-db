@@ -62,6 +62,27 @@ function getLatestTotal(){
     })
 }
 
+function addLeaderboard(player_name, season, rank, position, points, wins, loses, played, winrate) {
+  // console.log(`IN ADD MATCHES`)
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(
+          `INSERT INTO leaderboard (player_name, season, rank, position, points, wins, loses, played, winrate)
+          VALUES ('${player_name}', '${season}', '${rank}', '${position}', '${points}', '${wins}', '${loses}', '${played}', '${winrate}')`
+        )
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+};
+
 function addMatches(starttime, matchDuration, player1_id, player1Name, player1Faction, player1Random, player2_id, player2Name, player2Faction, player2Random, result, map, replay, season) {
   // console.log(`IN ADD MATCHES`)
   return pool
@@ -125,10 +146,241 @@ function addTotal(total) {
     })
 };
 
+function dropTable(table) {
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(`DROP TABLE ${table}`)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+};
+
+function createLeaderboard() {
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(`CREATE TABLE leaderboard(
+          index serial,
+          player_name varchar(255) NOT NULL,
+          season INT NOT NULL,
+          rank varchar(255) NOT NULL,
+          position INT NOT NULL,
+          points INT NOT NULL,
+          wins INT,
+          loses INT,
+          played INT,
+          winrate INT
+        )`)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+};
+
+function createLeaderboard() {
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(`CREATE TABLE leaderboard(
+          index serial,
+          player_name varchar(255) NOT NULL,
+          season INT NOT NULL,
+          rank varchar(255) NOT NULL,
+          position INT NOT NULL,
+          points INT NOT NULL,
+          wins INT,
+          loses INT,
+          played INT,
+          winrate INT
+        )`)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+};
+
+function createHistory() {
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(`CREATE TABLE elo_history(
+          index serial,
+          starttime FLOAT,
+          duration FLOAT,
+          player varchar(255),
+          player_faction varchar(3),
+          player_random BOOLEAN,
+          player_existing_elo INT,
+          player_new_elo INT,
+          opponent varchar(255),
+          opponent_faction varchar(3),
+          opponent_random BOOLEAN,
+          opponent_existing_elo INT,
+          opponent_new_elo INT,
+          map varchar(255),
+          replay varchar(255),
+          result BOOLEAN,
+          season INT
+        )`)
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+};
+
+function addHistory(
+  starttime,
+  matchDuration,
+  playerName,
+  playerFaction,
+  playerRandom,
+  playerExistingElo,
+  playerNewElo,
+  opponentName,
+  opponentFaction,
+  opponentRandom,
+  opponentExistingElo,
+  opponentNewElo,
+  map,
+  replay,
+  result,
+  season
+){
+  return pool
+    .connect()
+    .then(client => {
+      return client
+        .query(
+          `INSERT INTO elo_history (
+            starttime,
+            duration,
+            player,
+            player_faction,
+            player_random,
+            player_existing_elo,
+            player_new_elo,
+            opponent,
+            opponent_faction,
+            opponent_random,
+            opponent_existing_elo,
+            opponent_new_elo,
+            map,
+            replay,
+            result,
+            season)
+          VALUES (
+            '${starttime}',
+            '${matchDuration}',
+            '${playerName}',
+            '${playerFaction}',
+            '${playerRandom}',
+            '${playerExistingElo}',
+            '${playerNewElo}',
+            '${opponentName}',
+            '${opponentFaction}',
+            '${opponentRandom}',
+            '${opponentExistingElo}',
+            '${opponentNewElo}',
+            '${map}',
+            '${replay}',
+            '${result}',
+            '${season}'
+          )`
+        )
+        .then(res => {
+          client.release()
+          return res
+        })
+        .catch(err => {
+          client.release()
+          console.log(err.stack)
+        })
+    })
+}
+//
+// function addAwards(
+//   most_gdi,
+//   most_gdi_total,
+//   most_nod,
+//   most_nod_total,
+//   most_random,
+//   most_random_total,
+//   most_overall,
+//   most_overall_total,
+//   season
+// ){
+//   return pool
+//     .connect()
+//     .then(client => {
+//       return client
+//         .query(
+//           `INSERT INTO awards (
+//             most_gdi,
+//             most_gdi_total,
+//             most_nod,
+//             most_nod_total,
+//             most_random,
+//             most_random_total,
+//             most_overall,
+//             most_overall_total,
+//             season)
+//           VALUES (
+//             '${most_gdi}',
+//             '${most_gdi_total}',
+//             '${most_nod}',
+//             '${most_nod_total}',
+//             '${most_random}',
+//             '${most_random_total}',
+//             '${most_overall}',
+//             '${most_overall_total}'
+//           )`
+//         )
+//         .then(res => {
+//           client.release()
+//           return res
+//         })
+//         .catch(err => {
+//           client.release()
+//           console.log(err.stack)
+//         })
+//     })
+// }
+
 module.exports = {
+  addLeaderboard,
   addMatches,
   addMatchesAsync,
   addTotal,
+  addHistory,
   getLatestTotal,
-  getAllMatches
+  getAllMatches,
+  dropTable,
+  createHistory,
+  createLeaderboard
 };
