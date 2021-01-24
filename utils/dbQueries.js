@@ -38,12 +38,11 @@ function getAllMatches() {
           return res.rows
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
-
 
 function getLatestTotal(){
   return pool
@@ -56,8 +55,8 @@ function getLatestTotal(){
           return res.rows[0].total
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 }
@@ -77,8 +76,8 @@ function addLeaderboard(player_name, season, rank, position, points, wins, loses
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -98,8 +97,9 @@ function addMatches(starttime, matchDuration, player1_id, player1Name, player1Fa
           return res
         })
         .catch(err => {
-          client.release()
+
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -140,8 +140,8 @@ function addTotal(total) {
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -157,8 +157,8 @@ function dropTable(table) {
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -185,8 +185,8 @@ function createLeaderboard() {
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -213,8 +213,8 @@ function createLeaderboard() {
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -248,8 +248,8 @@ function createHistory() {
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 };
@@ -318,8 +318,8 @@ function addHistory(
           return res
         })
         .catch(err => {
-          client.release()
           console.log(err.stack)
+          client.release()
         })
     })
 }

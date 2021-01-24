@@ -16,6 +16,7 @@
     "start": "node --trace-warnings cronjob.js && node --trace-warning utils/elo.js",
     "cron": "node --trace-warnings cronjob.js && node --trace-warning utils/elo.js",
     "test": "node utils/dataFilter.js",
+    "justcron": "node cronjob.js",
     "elo": "node utils/elo.js"
   }
 }
