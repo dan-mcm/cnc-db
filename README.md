@@ -34,7 +34,7 @@ Used for keeping track of value for total games recorded by the API. This is use
 
 ### **leaderboard** table
 
-Used for keep our top players data - easier for the frontend to parse.
+Used for keep our top players data - easier for the frontend to parse
 
 |index |           player_name            | season |    rank    | position | points | wins | loses | played | winrate|
 |-------|----------------------------------|--------|------------|----------|--------|------|-------|--------|---------|

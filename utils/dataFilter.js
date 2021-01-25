@@ -74,13 +74,13 @@ function dataUploadFilter(apiMatches){
         let player1TeamID = singleMatch.players[0]
         let player1Name = singleMatch.names[0]
         let player1TeamName = singleMatch.teams[0]
-        let player1Faction = (singleMatch.factions[player1TeamName] === 0) ? "GDI" : "Nod"
+        let player1Faction = (singleMatch.factions[0] === 0) ? "GDI" : "Nod"
         let player1Random = (singleMatch.wasrandom[0]) ? 1 : 0
 
         let player2TeamID = singleMatch.players[1]
         let player2Name = singleMatch.names[1]
         let player2TeamName = singleMatch.teams[1]
-        let player2Faction = (singleMatch.factions[player2TeamName] === 0) ? "GDI" : "Nod"
+        let player2Faction = (singleMatch.factions[1] === 0) ? "GDI" : "Nod"
         let player2Random = (singleMatch.wasrandom[1]) ? 1 : 0
 
         let winningTeamID = singleMatch.winningteamid
