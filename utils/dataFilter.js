@@ -60,12 +60,12 @@ function dataUploadFilter(apiMatches){
     // console.log(`ENTERED DATA UPLOAD FILTER`)
     apiMatches.matches.map(singleMatch => {
       // season 3
-      // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2
-      // console.log(`EXTRA MATCH SETTINGS: ${JSON.stringify(singleMatch.extramatchsettings)}`)
+      // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2 && its a QM game
       if (singleMatch.extramatchsettings
       && singleMatch.extramatchsettings.product_type === 'TD'
       && singleMatch.starttime > 1609459200
       && singleMatch.names.length === 2
+      && singleMatch.matchname === '1v1 QM'
       && ladderMapNames.some(map => singleMatch.mapname.includes(map))){
         // console.log(Object.keys(singleMatch))
         let starttime = singleMatch.starttime
