@@ -1,68 +1,21 @@
 const DB = require('./dbQueries.js');
 const dotenv = require('dotenv').config();
-
+const seasonCalculator = require('./helpers.js').seasonCalculator;
+const ladderMapNames = require('./helpers.js').ladderMapNames;
+const customMapNames = require('./helpers.js').customMapNames;
+const ladderMapParserS3 = require('./helpers.js').ladderMapParserS3
+const ladderMapParserS4 = require('./helpers.js').ladderMapParserS4
 const sampleData = require('../test-data/singleObject.js').sampleData
 const data = require('../test-data/2215to2323.js').data
 
-// official season 3 map names
-let ladderMapNames = [
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP", // green_acres
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_60_MAP", // monkey_in_the_middle
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_3_MAP", // elevation
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_4_MAP", // heavy_metal
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_5_MAP", // quarry
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_6_MAP", // tournament_middle_camp
-  "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_7_MAP" // tournament_desert
-]
-
-// community season 4 map names
-let customMapNames = [
-  "UGC_01100001000DEC1B_0000000081EBB6A8_MAPDATA", // duality
-  "UGC_011000010FDE20F0_000000007E6E4CDA_MAPDATA", // quicksilver
-  "UGC_01100001013FFA5D_0000000081DE9C5F_MAPDATA", // neo_twin_peaks
-  "UGC_01100001056621FC_0000000082B0CC9F_MAPDATA", // sand_crystal_shard
-  "UGC_0110000105329996_000000008064079B_MAPDATA", // higher_order
-  "UGC_0110000105329996_000000008289B6E4_MAPDATA", // vales_of_the_templars
-  "UGC_0110000105329996_00000000828943E1_MAPDATA", // canyon_paths
-  "UGC_01100001013FFA5D_0000000081AC4211_MAPDATA" // frosted_hostilities_vertically_mirrored
-]
-
-function ladderMapParserS3(mapname){
-  let ladderMaps = {
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_1_MAP": "green_acres",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_60_MAP": "monkey_in_the_middle",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_3_MAP": "elevation",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_4_MAP": "heavy_metal",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_5_MAP": "quarry",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_6_MAP": "tournament_middle_camp",
-    "MOBIUS_TIBERIAN_DAWN_MULTIPLAYER_COMMUNITY_7_MAP": "tournament_desert"
-  }
-
-  return ladderMaps[mapname]
-}
-
-function ladderMapParserS4(mapname){
-  let ladderMaps = {
-    "UGC_01100001000DEC1B_0000000081EBB6A8_MAPDATA": "duality",
-    "UGC_011000010FDE20F0_000000007E6E4CDA_MAPDATA": "quicksilver",
-    "UGC_01100001013FFA5D_0000000081DE9C5F_MAPDATA": "neo_twin_peaks",
-    "UGC_01100001056621FC_0000000082B0CC9F_MAPDATA": "sand_crystal_shard",
-    "UGC_0110000105329996_000000008064079B_MAPDATA": "higher_order",
-    "UGC_0110000105329996_000000008289B6E4_MAPDATA": "vales_of_the_templars",
-    "UGC_0110000105329996_00000000828943E1_MAPDATA": "canyon_paths",
-    "UGC_01100001013FFA5D_0000000081AC4211_MAPDATA": "frosted_hostilities_vertically_mirrored"
-  }
-
-  return ladderMaps[mapname]
-}
-
-function dataUploadFilter(apiMatches){
+function dataUploadFilter(pool, apiMatches){
     // console.log(`ENTERED DATA UPLOAD FILTER`)
     apiMatches.matches.map(singleMatch => {
-      // season 3
+      // standard quickmatch maps = season 3 onwards
       // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2 && its a QM game
       if (singleMatch.extramatchsettings
       && singleMatch.extramatchsettings.product_type === 'TD'
+      // 1st Jan 2021
       && singleMatch.starttime > 1609459200
       && singleMatch.names.length === 2
       && singleMatch.matchname === '1v1 QM'
@@ -89,9 +42,13 @@ function dataUploadFilter(apiMatches){
 
         let map = ladderMapParserS3(singleMatch.mapname) // converting to human readable
         let replay = singleMatch.cdnurl
-        let season = 3 //hardcoded
+
+        // 2021 Season Resets
+        let season = seasonCalculator(singleMatch.starttime)
+
         // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
         DB.addMatches(
+          pool,
           starttime,
           matchDuration,
           player1TeamID,
@@ -113,6 +70,7 @@ function dataUploadFilter(apiMatches){
       // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2
       if (singleMatch.extramatchsettings
       && singleMatch.extramatchsettings.product_type === 'TD'
+      // 1st Jan 2021
       && singleMatch.starttime > 1609459200
       && singleMatch.names.length === 2
       && customMapNames.some(map => singleMatch.mapname.includes(map))){
@@ -143,6 +101,7 @@ function dataUploadFilter(apiMatches){
         let season = 4 //hardcoded
         // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
         DB.addMatches(
+          pool,
           starttime,
           matchDuration,
           player1TeamID,
@@ -162,9 +121,6 @@ function dataUploadFilter(apiMatches){
     }
   )
 }
-
-// dataUploadFilter(sampleData)
-// dataUploadFilter(data)
 
 module.exports = {
   dataUploadFilter

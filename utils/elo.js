@@ -4,6 +4,7 @@ const DB = require('./dbQueries.js');
 const parser = require('./dataFilter.js').dataUploadFilter;
 const { Pool } = require('pg');
 const utf8 = require('utf8');
+const seasonCalculator = require('./helpers.js').seasonCalculator;
 
 function eloCalculator(p1, p2, p1Result) {
   // A p1_result of true means player 1 was winner.
@@ -217,7 +218,7 @@ function getRank(rank) {
 
 // TODO - add player ids
 function leaderboardUpdate(data, season){
-  data.map((player,index) => {
+  return data.map((player,index) => {
     let playerName = player.name
     let playerPoints = player.current_elo
     let wins = player.games.filter(game => game.result === 'W').length
@@ -241,11 +242,16 @@ function leaderboardUpdate(data, season){
 }
 
 // TODO - add player ids
-function historyUpdate(games, season){
-  games.map(game => {
+function historyUpdate(pool, games, season){
+  return games.map(game => {
     let decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
     let decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
+    if(season === 3){
+      season = seasonCalculator(game.starttime)
+    }
+
     return DB.addHistory(
+      pool,
       game.starttime,
       game.match_duration,
       decodedPlayer1,
@@ -267,27 +273,7 @@ function historyUpdate(games, season){
 }
 
 function eloUpdate(season){
-  let pool;
-
-  if (process.env.NODE_ENV === 'production') {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
-    });
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    pool = new Pool({
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      database: process.env.DB_NAME,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT
-    });
-  }
-
+  let pool = DB.createPool()
   pool
     .connect()
     .then(client => {
@@ -300,12 +286,13 @@ function eloUpdate(season){
       const eloAddition = eloCalculationsRawRevised(res.rows);
 
       // update elo history
-      historyUpdate(eloAddition, season)
+      historyUpdate(pool, eloAddition, season)
 
       const translatedData = dbdataTranslation(eloAddition).sort((a, b) => (a.current_elo > b.current_elo ? -1 : 1));
       // update leaderboard
       leaderboardUpdate(translatedData, season)
     })
+    .then(() => recreateTables(pool))
     .catch(e => {
         console.log(e.stack);
         client.release();
@@ -318,28 +305,33 @@ function eloUpdate(season){
     );
   }
 
-// drop existing table
-DB.dropTable('leaderboard')
-  .then(res =>
-    // create new table
-    DB.createLeaderboard()
+function recreateTables(pool){
+  // drop existing table
+  return DB.dropTable(pool, 'leaderboard')
+    .then(res =>
+      // create new table
+      DB.createLeaderboard(pool)
+    )
+    .then(res =>
+      // drop elo history
+      DB.dropTable(pool, 'elo_history')
+    )
+    .then(res =>
+      // update elo history
+      DB.createHistory(pool)
+    )
+    .then(res =>
+      // apply normal maps update
+      eloUpdate(pool, 3)
+    )
+    .then(res =>
+      // apply custom maps update
+      eloUpdate(pool, 4)
+    )
+    .finally(
+      () => console.log('Finished Elo Update')
+    )
+    .catch(err =>
+    console.log(err)
   )
-  .then(res =>
-    // drop elo history
-    DB.dropTable('elo_history')
-  )
-  .then(res =>
-    // update elo history
-    DB.createHistory()
-  )
-  .then(res =>
-    // apply s3 update
-    eloUpdate(3)
-  )
-  .then(res =>
-    // apply s4 update
-    eloUpdate(4)
-  )
-  .catch(err =>
-  console.log(err)
-)
+}

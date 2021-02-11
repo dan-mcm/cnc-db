@@ -1,33 +1,39 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv').config();
 
-let pool;
+// let pool = createPool()
 
-if (process.env.NODE_ENV === 'production') {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
+function createPool(){
+  let pool;
+
+  if (process.env.NODE_ENV === 'production') {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT
+    });
+  }
+
+  pool.on('error', (err, client) => {
+    console.error('Unexpected error on idle client', err)
+    process.exit(-1)
+  })
+
+  return pool
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
-  });
-}
-
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err)
-  process.exit(-1)
-})
-
-function getAllMatches() {
+function getAllMatches(pool) {
   return pool
     .connect()
     .then(client => {
@@ -38,13 +44,13 @@ function getAllMatches() {
           return res.rows
         })
         .catch(err => {
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 };
 
-function getLatestTotal(){
+function getLatestTotal(pool){
   return pool
     .connect()
     .then(client => {
@@ -55,14 +61,13 @@ function getLatestTotal(){
           return res.rows[0].total
         })
         .catch(err => {
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 }
 
 function addLeaderboard(player_name, season, rank, position, points, wins, loses, played, winrate) {
-  // console.log(`IN ADD MATCHES`)
   return pool
     .connect()
     .then(client => {
@@ -76,14 +81,13 @@ function addLeaderboard(player_name, season, rank, position, points, wins, loses
           return res
         })
         .catch(err => {
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 };
 
-function addMatches(starttime, matchDuration, player1_id, player1Name, player1Faction, player1Random, player2_id, player2Name, player2Faction, player2Random, result, map, replay, season) {
-  // console.log(`IN ADD MATCHES`)
+function addMatches(pool, starttime, matchDuration, player1_id, player1Name, player1Faction, player1Random, player2_id, player2Name, player2Faction, player2Random, result, map, replay, season) {
   return pool
     .connect()
     .then(client => {
@@ -97,39 +101,34 @@ function addMatches(starttime, matchDuration, player1_id, player1Name, player1Fa
           return res
         })
         .catch(err => {
-
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 };
 
-const addMatchesAsync = async function(starttime, matchDuration, player1_id, player1Name, player1Faction, player1Random, player2_id, player2Name, player2Faction, player2Random, result, map, replay, season) {
-  // console.log(`IN ADD MATCHESASYNC`)
-  const client = await pool.connect()
-  try{
-    const res = await pool.query(
-      `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
-      VALUES ('${starttime}', '${matchDuration}', '${player1_id}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2_id}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
-      (err, res) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(res);
-          return res;
-        }
+// const addMatchesAsync = async function(starttime, matchDuration, player1_id, player1Name, player1Faction, player1Random, player2_id, player2Name, player2Faction, player2Random, result, map, replay, season) {
+//   const client = await pool.connect()
+//   try{
+//     const res = await pool.query(
+//       `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
+//       VALUES ('${starttime}', '${matchDuration}', '${player1_id}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2_id}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`,
+//       (err, res) => {
+//         if (err) {
+//           console.log(err);
+//         } else {
+//           console.log(res);
+//           return res;
+//         }
+//       }
+//     );
+//     console.log(`SUCCESS!!! ${res}`)
+//   } finally {
+//     client.release()
+//   }
+// };
 
-        // Syntax used to hide error logging of pool end > once
-        // pool.end(() => {});
-      }
-    );
-    console.log(`SUCCESS!!! ${res}`)
-  } finally {
-    client.release()
-  }
-};
-
-function addTotal(total) {
+function addTotal(pool, total) {
   return pool
     .connect()
     .then(client => {
@@ -140,13 +139,13 @@ function addTotal(total) {
           return res
         })
         .catch(err => {
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 };
 
-function dropTable(table) {
+function dropTable(pool, table) {
   return pool
     .connect()
     .then(client => {
@@ -157,13 +156,13 @@ function dropTable(table) {
           return res
         })
         .catch(err => {
-          console.log(err.stack)
           client.release()
+          console.log(err.stack)
         })
     })
 };
 
-function createLeaderboard() {
+function createLeaderboard(pool) {
   return pool
     .connect()
     .then(client => {
@@ -191,35 +190,7 @@ function createLeaderboard() {
     })
 };
 
-function createLeaderboard() {
-  return pool
-    .connect()
-    .then(client => {
-      return client
-        .query(`CREATE TABLE leaderboard(
-          index serial,
-          player_name varchar(255) NOT NULL,
-          season INT NOT NULL,
-          rank varchar(255) NOT NULL,
-          position INT NOT NULL,
-          points INT NOT NULL,
-          wins INT,
-          loses INT,
-          played INT,
-          winrate INT
-        )`)
-        .then(res => {
-          client.release()
-          return res
-        })
-        .catch(err => {
-          console.log(err.stack)
-          client.release()
-        })
-    })
-};
-
-function createHistory() {
+function createHistory(pool) {
   return pool
     .connect()
     .then(client => {
@@ -255,6 +226,7 @@ function createHistory() {
 };
 
 function addHistory(
+  pool,
   starttime,
   matchDuration,
   playerName,
@@ -323,64 +295,21 @@ function addHistory(
         })
     })
 }
-//
-// function addAwards(
-//   most_gdi,
-//   most_gdi_total,
-//   most_nod,
-//   most_nod_total,
-//   most_random,
-//   most_random_total,
-//   most_overall,
-//   most_overall_total,
-//   season
-// ){
-//   return pool
-//     .connect()
-//     .then(client => {
-//       return client
-//         .query(
-//           `INSERT INTO awards (
-//             most_gdi,
-//             most_gdi_total,
-//             most_nod,
-//             most_nod_total,
-//             most_random,
-//             most_random_total,
-//             most_overall,
-//             most_overall_total,
-//             season)
-//           VALUES (
-//             '${most_gdi}',
-//             '${most_gdi_total}',
-//             '${most_nod}',
-//             '${most_nod_total}',
-//             '${most_random}',
-//             '${most_random_total}',
-//             '${most_overall}',
-//             '${most_overall_total}'
-//           )`
-//         )
-//         .then(res => {
-//           client.release()
-//           return res
-//         })
-//         .catch(err => {
-//           client.release()
-//           console.log(err.stack)
-//         })
-//     })
-// }
+
+function closePool(pool){
+    return pool.end().then(() => console.log('Closed PG Pool'))
+}
 
 module.exports = {
   addLeaderboard,
   addMatches,
-  addMatchesAsync,
   addTotal,
   addHistory,
   getLatestTotal,
   getAllMatches,
   dropTable,
   createHistory,
-  createLeaderboard
+  createLeaderboard,
+  createPool,
+  closePool
 };
