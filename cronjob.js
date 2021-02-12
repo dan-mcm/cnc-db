@@ -1,7 +1,8 @@
 const axios = require('axios').default;
 const dotenv = require('dotenv').config();
 const DB = require('./utils/dbQueries.js');
-const parser = require('./utils/dataFilter.js').dataUploadFilter;
+const { dataUploadFilter } = require('./utils/dataFilter.js');
+const { regenerateEloTables } = require('./utils/elo.js');
 
 function getCurrentMatchesCount(){
   return axios.get(
@@ -15,12 +16,12 @@ function getCurrentMatchesCount(){
 
 function FirstScrape(pool){
   // console.log(`RUNNING FirstScrapes ${Math.floor(limit)}`)
-  return axios.get(`${process.env.ENDPOINT}?limit=200`).then(res => parser(pool, res.data)).catch(err => console.log(err))
+  return axios.get(`${process.env.ENDPOINT}?limit=200`).then(res => dataUploadFilter(pool, res.data)).catch(err => console.log(err))
 }
 
 function nScrapes(pool, limit, offset){
   // console.log(`RUNNING nScrapes ${Math.floor(limit)} ${offset}`)
-  return axios.get(`${process.env.ENDPOINT}?limit=${Math.floor(limit)}&offset=${offset}`).then(res => parser(pool, res.data)).catch(err => console.log(err))
+  return axios.get(`${process.env.ENDPOINT}?limit=${Math.floor(limit)}&offset=${offset}`).then(res => dataUploadFilter(pool, res.data)).catch(err => console.log(err))
 }
 
 function CronScrape(){

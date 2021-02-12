@@ -217,7 +217,7 @@ function getRank(rank) {
   }
 
 // TODO - add player ids
-function leaderboardUpdate(data, season){
+function leaderboardUpdate(pool, data, season){
   return data.map((player,index) => {
     let playerName = player.name
     let playerPoints = player.current_elo
@@ -228,6 +228,7 @@ function leaderboardUpdate(data, season){
     let position = index + 1 // offsetting for 0 index
     let rank = getRank(position)
     return DB.addLeaderboard(
+      pool,
       playerName,
       season,
       rank,
@@ -242,7 +243,8 @@ function leaderboardUpdate(data, season){
 }
 
 // TODO - add player ids
-function historyUpdate(pool, games, season){
+function historyUpdate(games, season){
+  let pool = DB.createPool()
   return games.map(game => {
     let decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
     let decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
@@ -272,8 +274,7 @@ function historyUpdate(pool, games, season){
   })
 }
 
-function eloUpdate(season){
-  let pool = DB.createPool()
+function eloUpdate(pool, season){
   pool
     .connect()
     .then(client => {
@@ -286,26 +287,20 @@ function eloUpdate(season){
       const eloAddition = eloCalculationsRawRevised(res.rows);
 
       // update elo history
-      historyUpdate(pool, eloAddition, season)
+      historyUpdate(eloAddition, season)
 
       const translatedData = dbdataTranslation(eloAddition).sort((a, b) => (a.current_elo > b.current_elo ? -1 : 1));
       // update leaderboard
-      leaderboardUpdate(translatedData, season)
+      leaderboardUpdate(pool, translatedData, season)
     })
-    .then(() => recreateTables(pool))
     .catch(e => {
         console.log(e.stack);
         client.release();
       })
-    .finally(
-      () =>
-      {
-        return pool.end()
-      }
-    );
   }
 
-function recreateTables(pool){
+
+function regenerateEloTables(pool){
   // drop existing table
   return DB.dropTable(pool, 'leaderboard')
     .then(res =>
@@ -321,17 +316,42 @@ function recreateTables(pool){
       DB.createHistory(pool)
     )
     .then(res =>
-      // apply normal maps update
+      // apply normal maps update - s3
       eloUpdate(pool, 3)
     )
     .then(res =>
       // apply custom maps update
       eloUpdate(pool, 4)
     )
-    .finally(
-      () => console.log('Finished Elo Update')
+    .then(res =>
+      // apply normal maps update - s5
+      eloUpdate(pool, 5)
+    )
+    .then(res =>
+      // apply normal maps update - s6
+      eloUpdate(pool, 6)
+    )
+    .then(res =>
+      // apply normal maps update - s7
+      eloUpdate(pool, 7)
+    )
+    .then(res =>
+      // apply normal maps update - s8
+      eloUpdate(pool, 8)
     )
     .catch(err =>
     console.log(err)
   )
+    .finally(
+      () => {
+        console.log('Finished Elo Update')
+      }
+    )
 }
+
+let pool = DB.createPool()
+regenerateEloTables(pool)
+
+module.exports = {
+  regenerateEloTables
+};

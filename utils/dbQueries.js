@@ -67,7 +67,7 @@ function getLatestTotal(pool){
     })
 }
 
-function addLeaderboard(player_name, season, rank, position, points, wins, loses, played, winrate) {
+function addLeaderboard(pool, player_name, season, rank, position, points, wins, loses, played, winrate) {
   return pool
     .connect()
     .then(client => {
