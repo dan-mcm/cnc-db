@@ -244,7 +244,6 @@ function leaderboardUpdate(pool, data, season){
 
 // TODO - add player ids
 function historyUpdate(games, season){
-  let pool = DB.createPool()
   return games.map(game => {
     let decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
     let decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
