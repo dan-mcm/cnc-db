@@ -1,10 +1,6 @@
-const axios = require('axios').default;
 const dotenv = require('dotenv').config();
 const DB = require('./dbQueries.js');
-const parser = require('./dataFilter.js').dataUploadFilter;
-const { Pool } = require('pg');
 const utf8 = require('utf8');
-const seasonCalculator = require('./helpers.js').seasonCalculator;
 
 function eloCalculator(p1, p2, p1Result) {
   // A p1_result of true means player 1 was winner.
@@ -17,7 +13,7 @@ function eloCalculator(p1, p2, p1Result) {
 
 function getElo(filteredData, playerName) {
   const matches = [];
-  filteredData.map(game => {
+  filteredData.map((game) => {
     if (game.player1_name === playerName) {
       matches.push(game);
     }
@@ -38,26 +34,25 @@ function getElo(filteredData, playerName) {
   return 1000;
 }
 
-function eloCalculationsRawRevised(data) {
-  const filteredOutput = [];
+function eloCalculationsRawRevised(newMatches, existingElo) {
+  const filteredOutput = [existingElo]; // creating array and adding our existing elo data to it (may need formatting)
   const defaultStartingElo = 1000;
   let p1Elo = 0;
   let p2Elo = 0;
-
-  data.map(game => {
+  newMatches.map((game) => {
     const p1Exists =
       filteredOutput.some(
-        recordedGame => recordedGame.player1_name === game.player1_name
+        (recordedGame) => recordedGame.player1_name === game.player1_name
       ) ||
       filteredOutput.some(
-        recordedGame => recordedGame.player2_name === game.player1_name
+        (recordedGame) => recordedGame.player2_name === game.player1_name
       );
     const p2Exists =
       filteredOutput.some(
-        recordedGame => recordedGame.player2_name === game.player2_name
+        (recordedGame) => recordedGame.player2_name === game.player2_name
       ) ||
       filteredOutput.some(
-        recordedGame => recordedGame.player1_name === game.player2_name
+        (recordedGame) => recordedGame.player1_name === game.player2_name
       );
 
     // Not exist case
@@ -93,7 +88,7 @@ function eloCalculationsRawRevised(data) {
 function dbdataTranslation(dataArray) {
   const listedPlayers = [];
   const output = [];
-  dataArray.map(match => {
+  dataArray.map((match) => {
     // Default case if we haven't encountered player1 yet...
     const decodedPlayer1 = utf8.decode(eval("'" + match.player1_name + "'"));
     const decodedPlayer2 = utf8.decode(eval("'" + match.player2_name + "'"));
@@ -128,7 +123,9 @@ function dbdataTranslation(dataArray) {
       output.push(frontend);
     } else if (listedPlayers.includes(decodedPlayer1)) {
       // Second case if we have encountered player1 yet...
-      const index = output.findIndex(player => player.name === decodedPlayer1);
+      const index = output.findIndex(
+        (player) => player.name === decodedPlayer1
+      );
 
       output[index].games.push({
         date: match.starttime,
@@ -178,7 +175,9 @@ function dbdataTranslation(dataArray) {
       output.push(frontend);
     } else if (listedPlayers.includes(decodedPlayer2)) {
       // Second case if we have encountered player2 yet...
-      const index = output.findIndex(player => player.name === decodedPlayer2);
+      const index = output.findIndex(
+        (player) => player.name === decodedPlayer2
+      );
 
       output[index].games.push({
         date: match.starttime,
@@ -203,53 +202,67 @@ function dbdataTranslation(dataArray) {
 }
 
 function getRank(rank) {
-    if (rank <= 16) {
-      return 'general';
-    } else if (rank <= 200) {
-      return 'major';
-    } else if (rank <= 400) {
-      return 'captain';
-    } else if (rank <= 600) {
-      return 'lieutenant';
-    } else {
-      return 'sergeant';
-    }
-  }
-
-// TODO - add player ids
-function leaderboardUpdate(pool, data, season){
-  return data.map((player,index) => {
-    let playerName = player.name
-    let playerPoints = player.current_elo
-    let wins = player.games.filter(game => game.result === 'W').length
-    let loss = player.games.filter(game => game.result === 'L').length
-    let played = player.games.length
-    let winrate = Math.floor(wins / played * 100)
-    let position = index + 1 // offsetting for 0 index
-    let rank = getRank(position)
-    return DB.addLeaderboard(
-      pool,
-      playerName,
-      season,
-      rank,
-      position,
-      playerPoints,
-      wins,
-      loss,
-      played,
-      winrate
-    )
-  })
+  if (rank <= 16) return 'general';
+  if (rank <= 200) return 'major';
+  if (rank <= 400) return 'captain';
+  if (rank <= 600) return 'lieutenant';
+  return 'sergeant';
 }
 
 // TODO - add player ids
-function historyUpdate(games, season){
-  return games.map(game => {
-    let decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
-    let decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
-    if(season === 3){
-      season = seasonCalculator(game.starttime)
-    }
+function leaderboardUpdate(pool, data, season) {
+  return data.map((player, index) => {
+    const playerName = player.name;
+    const playerPoints = player.current_elo;
+    const wins = player.games.filter((game) => game.result === 'W').length;
+    const loss = player.games.filter((game) => game.result === 'L').length;
+    const played = player.games.length;
+    const winrate = Math.floor((wins / played) * 100);
+    const position = index + 1; // offsetting for 0 index
+    const rank = getRank(position);
+
+    DB.getPlayersCurrentLeaderboardIndex(pool, playerName, season)
+      .then((res) => {
+        if (res > 0) {
+          // if player already on leaderboard, overwrite position
+          return DB.overridePlayersLeaderboardPosition(
+            pool,
+            res, // players current index in table
+            playerName,
+            season,
+            rank,
+            position,
+            playerPoints,
+            wins,
+            loss,
+            played,
+            winrate
+          );
+        } else {
+          // if player not on leaderboard, add as new entry
+          return DB.addLeaderboard(
+            pool,
+            playerName,
+            season,
+            rank,
+            position,
+            playerPoints,
+            wins,
+            loss,
+            played,
+            winrate
+          );
+        }
+      })
+      .catch((err) => console.log(err));
+  });
+}
+
+// TODO - add player ids
+function historyUpdate(pool, games, season) {
+  return games.map((game) => {
+    const decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
+    const decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
 
     return DB.addHistory(
       pool,
@@ -267,89 +280,66 @@ function historyUpdate(games, season){
       game.player2_elo_after,
       game.map,
       `https://replays.cnctdra.ea.com/${game.replay}`,
-      game.result === decodedPlayer2 ? true : false,
+      game.result === decodedPlayer2,
       season
-    )
-  })
+    );
+  });
 }
 
-function eloUpdate(pool, season){
-  pool
-    .connect()
-    .then(client => {
-      return client
-        .query(
-          `SELECT distinct(starttime) starttime, match_duration, player1_name, player1_faction, player1_random, player2_name, player2_faction, player2_random, result, map, replay, season FROM matches  WHERE season=${season} order by starttime ASC`
-        )
-    })
-    .then(res => {
-      const eloAddition = eloCalculationsRawRevised(res.rows);
+function eloUpdate(pool, season) {
+  // expect this to return array of objects -> top of which should be most recent starttime
+  return DB.getExistingSeasonEloMatches(pool, season)
+    .then((result) => {
+      const existingMatches = result;
+      let limit = existingMatches[0].starttime; // should be most recent elo game previously stored
+      if (limit === undefined) limit = 0.0;
+      // let starttime = most recent elo game
+      // expect this to only return additional matches
+      return DB.getSpecificSeasonMatches(pool, season, limit).then((res) => {
+        // update elo history (newMatches, existingElo)
+        const eloAddition = eloCalculationsRawRevised(res, existingMatches);
+        historyUpdate(pool, eloAddition, season);
+        const translatedData = dbdataTranslation(eloAddition).sort((a, b) =>
+          a.current_elo > b.current_elo ? -1 : 1
+        );
 
-      // update elo history
-      historyUpdate(eloAddition, season)
-
-      const translatedData = dbdataTranslation(eloAddition).sort((a, b) => (a.current_elo > b.current_elo ? -1 : 1));
-      // update leaderboard
-      leaderboardUpdate(pool, translatedData, season)
+        // update leaderboard ✔️
+        leaderboardUpdate(pool, translatedData, season);
+      });
     })
-    .catch(e => {
-        console.log(e.stack);
-        client.release();
-      })
+    .then(() => console.log(`Starting elo update for season ${season}`))
+    .catch((e) => {
+      console.log(e.stack);
+      client.release();
+    });
+}
+
+// based on current time, determining what season to use
+function seasonalUpdates(pool) {
+  // 2021 months
+  const jan = 1609459200;
+  const apr = 1617235200;
+  const july = 1625097600;
+  const oct = 1633046400;
+  // 2022 months
+  const jan2 = 1640995200;
+
+  const starttime = Date.now() / 1000;
+
+  if (starttime >= jan2) return eloUpdate(pool, 8);
+  if (starttime >= oct && starttime < jan2) return eloUpdate(pool, 7);
+  if (starttime >= july && starttime < oct) return eloUpdate(pool, 6);
+  if (starttime >= apr && starttime < july) return eloUpdate(pool, 5);
+  if (starttime > jan && starttime < apr) {
+    return Promise.all([eloUpdate(pool, 4), eloUpdate(pool, 3)]).then(() =>
+      console.log('Elo & Leaderboard Table Updates Complete.')
+    );
   }
-
-
-function regenerateEloTables(pool){
-  // drop existing table
-  return DB.dropTable(pool, 'leaderboard')
-    .then(res =>
-      // create new table
-      DB.createLeaderboard(pool)
-    )
-    .then(res =>
-      // drop elo history
-      DB.dropTable(pool, 'elo_history')
-    )
-    .then(res =>
-      // update elo history
-      DB.createHistory(pool)
-    )
-    .then(res =>
-      // apply normal maps update - s3
-      eloUpdate(pool, 3)
-    )
-    .then(res =>
-      // apply custom maps update
-      eloUpdate(pool, 4)
-    )
-    .then(res =>
-      // apply normal maps update - s5
-      eloUpdate(pool, 5)
-    )
-    .then(res =>
-      // apply normal maps update - s6
-      eloUpdate(pool, 6)
-    )
-    .then(res =>
-      // apply normal maps update - s7
-      eloUpdate(pool, 7)
-    )
-    .then(res =>
-      // apply normal maps update - s8
-      eloUpdate(pool, 8)
-    )
-    .catch(err =>
-    console.log(err)
-  )
-    .finally(
-      () => {
-        console.log('Finished Elo Update')
-      }
-    )
 }
 
-let pool = DB.createPool()
-regenerateEloTables(pool)
+function regenerateEloTables(pool) {
+  return seasonalUpdates(pool);
+}
 
 module.exports = {
   regenerateEloTables

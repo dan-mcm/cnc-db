@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e2582d98-aa26-4ca5-81de-84f21ed3058e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cronjob.js" beforeDir="false" afterPath="$PROJECT_DIR$/cronjob.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db-setup/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/db-setup/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/petroglyphScraper.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-data/2215to2323.js" beforeDir="false" afterPath="$PROJECT_DIR$/test-data/2215to2323.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-data/sampleLargerObject.json" beforeDir="false" afterPath="$PROJECT_DIR$/test-data/sampleLargerObject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-data/singleObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/test-data/singleObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dataFilter.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dataFilter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dbQueries.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dbQueries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/elo.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/elo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1prRqmWrEm1FKc1QoeXycoWzSVa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="sbt.project.settings.configurable" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e2582d98-aa26-4ca5-81de-84f21ed3058e" name="Default Changelist" comment="" />
+      <created>1615939438344</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1615939438344</updated>
+    </task>
+    <servers />
+  </component>
+</project>

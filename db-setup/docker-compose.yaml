@@ -2,8 +2,8 @@ postgres:
   container_name: cnc-matches
   image: postgres:12.1-alpine
   ports:
-    - '5432:5432'
+    - '5444:5432'
   environment:
+    POSTGRES_USER: 'dbuser'
+    POSTGRES_PASSWORD: 'pass'
     POSTGRES_DB: 'cnc-matches'
-    POSTGRES_USER: 'danku'
-    POSTGRES_PASS: 'cnc123'
