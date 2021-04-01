@@ -1,0 +1,202 @@
+position |    rank    |           player_name            | points | wins | loses | played | winrate
+----------+------------+----------------------------------+--------+------+-------+--------+---------
+       1 | general    | Peasy                            |   1923 |  119 |     3 |    122 |      97
+       2 | general    | rashnagar206                     |   1914 |  863 |   153 |   1016 |      84
+       3 | general    | ttvCriticalMeds                  |   1848 |  254 |    45 |    299 |      84
+       4 | general    | Twizzy                           |   1831 |  185 |    40 |    225 |      82
+       5 | general    | Sai                              |   1824 |   76 |    11 |     87 |      87
+       6 | general    | Rambo                            |   1809 |  130 |    17 |    147 |      88
+       7 | general    | DMraider                         |   1745 |  418 |   135 |    553 |      75
+       8 | general    | AOD Gaming                       |   1735 |  305 |   158 |    463 |      65
+       9 | general    | CandCRoadRunner                  |   1734 |  160 |    44 |    204 |      78
+      10 | general    | HabnieZeit2020                   |   1732 |  111 |    20 |    131 |      84
+      11 | general    | Chensen                          |   1731 |  224 |    50 |    274 |      81
+      12 | general    | Za_BlackTemplar                  |   1729 |  121 |    12 |    133 |      90
+      13 | general    | HHHXXX_ViciousK1d                |   1727 |  284 |   127 |    411 |      69
+      14 | general    | Zen                              |   1712 |   84 |    12 |     96 |      87
+      15 | general    | M3-Power-E36                     |   1697 |  166 |    40 |    206 |      80
+      16 | general    | UncleDJ                          |   1679 |  480 |   109 |    589 |      81
+      17 | major      | Hobbyspieler53                   |   1678 |  226 |   101 |    327 |      69
+      18 | major      | Danku                            |   1671 |  281 |   133 |    414 |      67
+      19 | major      | Aaron_                           |   1658 |  169 |    53 |    222 |      76
+      20 | major      | rootbie                          |   1644 |  380 |   139 |    519 |      73
+      21 | major      | Adam                             |   1639 |  296 |   159 |    455 |      65
+      22 | major      | VanderSK                         |   1618 |  115 |    44 |    159 |      72
+      23 | major      | magic2b                          |   1615 |  274 |   145 |    419 |      65
+      24 | major      | TheHatefulBait                   |   1610 |  245 |    85 |    330 |      74
+      25 | major      | TheDangerZone                    |   1608 |   52 |    15 |     67 |      77
+      26 | major      | SiNA is OP                       |   1606 |   71 |    17 |     88 |      80
+      27 | major      | MyGirlDickIsBiggerThanYours      |   1600 |   97 |    35 |    132 |      73
+      28 | major      | Campaign Player                  |   1596 |   66 |    12 |     78 |      84
+      29 | major      | AR7UR                            |   1571 |  106 |    58 |    164 |      64
+      30 | major      | Minimeeeeeeeeeeeeeeeeeeeee!      |   1571 |   91 |    44 |    135 |      67
+      31 | major      | killandfix                       |   1562 |  822 |   370 |   1192 |      68
+      32 | major      | Hurt Me Plenty                   |   1560 |  101 |    52 |    153 |      66
+      33 | major      | Phiddlun                         |   1555 |   33 |     3 |     36 |      91
+      34 | major      | Burn15                           |   1554 |  763 |   468 |   1231 |      61
+      35 | major      | Domero                           |   1553 |  198 |   108 |    306 |      64
+      36 | major      | nightcrawler49                   |   1536 |  569 |   310 |    879 |      64
+      37 | major      | KHANOMANCER                      |   1524 |  118 |    39 |    157 |      75
+      38 | major      | Retired                          |   1513 |   31 |     3 |     34 |      91
+      39 | major      | Ghosthit!                        |   1509 |  360 |   131 |    491 |      73
+      40 | major      | PB&JAM                           |   1501 |   80 |    24 |    104 |      76
+      41 | major      | ilikeit                          |   1493 |   34 |     7 |     41 |      82
+      42 | major      | The Night                        |   1491 |   42 |     1 |     43 |      97
+      43 | major      | Calamari                         |   1488 |   50 |    14 |     64 |      78
+      44 | major      | Emperor protects !!!!            |   1486 |  598 |   389 |    987 |      60
+      45 | major      | Shadow Hawk                      |   1485 |   69 |    22 |     91 |      75
+      46 | major      | Back4Blood                       |   1479 |  136 |    76 |    212 |      64
+      47 | major      | Thanks Jim                       |   1479 |   32 |     0 |     32 |     100
+      48 | major      | Roche                            |   1469 |   37 |     3 |     40 |      92
+      49 | major      | BronzePanic                      |   1466 |  106 |    66 |    172 |      61
+      50 | major      | Ghosthit                         |   1466 |   39 |    14 |     53 |      73
+      51 | major      | Tiago                            |   1463 |   34 |     0 |     34 |     100
+      52 | major      | Sushilicious                     |   1458 |   73 |   159 |    232 |      31
+      53 | major      | Ali***                           |   1443 |  184 |   102 |    286 |      64
+      54 | major      | Searching for opponent...        |   1442 |  685 |   508 |   1193 |      57
+      55 | major      | Val                              |   1442 |   53 |    23 |     76 |      69
+      56 | major      | JonnyKnows                       |   1439 |   45 |    52 |     97 |      46
+      57 | major      | TibGhost                         |   1436 |   34 |    18 |     52 |      65
+      58 | major      | Loth                             |   1434 |  115 |    74 |    189 |      60
+      59 | major      | Trionega                         |   1434 |   56 |    17 |     73 |      76
+      60 | major      | Ohayo Porco !                    |   1431 |   64 |    25 |     89 |      71
+      61 | major      | GuO                              |   1429 |   44 |    23 |     67 |      65
+      62 | major      | jarda.malina                     |   1425 |  478 |   277 |    755 |      63
+      63 | major      | obi-wan kenobi                   |   1423 |   33 |     6 |     39 |      84
+      64 | major      | nD|KiwaTunGo                     |   1420 |  198 |   134 |    332 |      59
+      65 | major      | DOGECOIN                         |   1415 |   40 |    21 |     61 |      65
+      66 | major      | Dark_Bilby                       |   1414 |  193 |   122 |    315 |      61
+      67 | major      | Iain                             |   1409 |  141 |   102 |    243 |      58
+      68 | major      | BLoser                           |   1408 |  232 |   132 |    364 |      63
+      69 | major      | Feinstruktur                     |   1400 |  402 |   299 |    701 |      57
+      70 | major      | CrystalManck                     |   1399 |   65 |    17 |     82 |      79
+      71 | major      | Dubbya                           |   1397 |  260 |   197 |    457 |      56
+      72 | major      | tea                              |   1396 |   47 |    25 |     72 |      65
+      73 | major      | Booster                          |   1394 |  235 |   119 |    354 |      66
+      74 | major      | Audiomax                         |   1381 |   98 |    52 |    150 |      65
+      75 | major      | qweqwe4                          |   1379 |   81 |    16 |     97 |      83
+      76 | major      | Starcraft: Brood War             |   1364 |  129 |    71 |    200 |      64
+      77 | major      | Corny                            |   1363 |   46 |    27 |     73 |      63
+      78 | major      | Morzy                            |   1363 |   86 |    63 |    149 |      57
+      79 | major      | EscheDerBoss                     |   1362 |   53 |    33 |     86 |      61
+      80 | major      | Skuzzy                           |   1360 |  128 |    72 |    200 |      64
+      81 | major      | Enzo440                          |   1356 |  372 |   316 |    688 |      54
+      82 | major      | Bowlsie                          |   1352 |  142 |    96 |    238 |      59
+      83 | major      | Mistykoke                        |   1346 |   44 |    11 |     55 |      80
+      84 | major      | Harlequin52.ttv                  |   1344 |   94 |    50 |    144 |      65
+      85 | major      | Khyira                           |   1343 |   29 |    12 |     41 |      70
+      86 | major      | CrazyAlbin                       |   1342 |  110 |    87 |    197 |      55
+      87 | major      | Mr Red Stag                      |   1341 |   68 |    61 |    129 |      52
+      88 | major      | ThatCat                          |   1341 |   25 |     6 |     31 |      80
+      89 | major      | sovasasha                        |   1340 |   36 |    23 |     59 |      61
+      90 | major      | Captain Ballbag                  |   1337 |  116 |    95 |    211 |      54
+      91 | major      | ggeneral                         |   1336 |  100 |    80 |    180 |      55
+      92 | major      | Pure Frog                        |   1336 |   48 |    32 |     80 |      60
+      93 | major      | myName="sir smart harvester";    |   1336 |  236 |   195 |    431 |      54
+      94 | major      | JSP0889                          |   1335 |  657 |   543 |   1200 |      54
+      95 | major      | WZ-132                           |   1334 |   19 |     0 |     19 |     100
+      96 | major      | Lino Bollansee                   |   1332 |  389 |   197 |    586 |      66
+      97 | major      | Tony Soprano                     |   1332 |   56 |    44 |    100 |      56
+      98 | major      | MeatLove                         |   1332 |   38 |    16 |     54 |      70
+      99 | major      | melis.thibaud                    |   1330 |  219 |   174 |    393 |      55
+     100 | major      | stony                            |   1327 |   38 |    21 |     59 |      64
+     101 | major      | Loading                          |   1326 |   20 |     9 |     29 |      68
+     102 | major      | Kuppiveikko                      |   1321 |  288 |   207 |    495 |      58
+     103 | major      | hundor90 [HUN]                   |   1320 |   60 |    35 |     95 |      63
+     104 | major      | Alexmir13                        |   1317 |   58 |    49 |    107 |      54
+     105 | major      | BurnieByrnes                     |   1315 |   41 |    14 |     55 |      74
+     106 | major      | zergling [HUN]                   |   1315 |   65 |    54 |    119 |      54
+     107 | major      | bcnaug                           |   1314 |  950 |   760 |   1710 |      55
+     108 | major      | zombiegizmo99                    |   1314 |  124 |    99 |    223 |      55
+     109 | major      | Imgone                           |   1314 |   27 |    12 |     39 |      69
+     110 | major      | 1st.Painkiller                   |   1314 |  261 |   219 |    480 |      54
+     111 | major      | Russischewurst                   |   1313 |  132 |    96 |    228 |      57
+     112 | major      | Wo.DooM;                         |   1312 |   61 |    33 |     94 |      64
+     113 | major      | SpecialDeliveryBitch             |   1311 |   17 |     0 |     17 |     100
+     114 | major      | Jeeben                           |   1310 |   31 |     5 |     36 |      86
+     115 | major      | ImNotVasiliy                     |   1309 |   87 |    50 |    137 |      63
+     116 | major      | Red                              |   1306 |   16 |     3 |     19 |      84
+     117 | major      | bigmammoth2                      |   1298 |  308 |   229 |    537 |      57
+     118 | major      | j_me1                            |   1289 |   50 |    41 |     91 |      54
+     119 | major      | ttv | sfhobbit                   |   1289 |   18 |     6 |     24 |      75
+     120 | major      | ACE SAFT                         |   1284 |   40 |    25 |     65 |      61
+     121 | major      | madstar                          |   1280 |  264 |   240 |    504 |      52
+     122 | major      | Cat                              |   1278 |   37 |    26 |     63 |      58
+     123 | major      | SplinterII                       |   1275 |  114 |    81 |    195 |      58
+     124 | major      | ImDrunkAndYoureKindaCute         |   1273 |   19 |     2 |     21 |      90
+     125 | major      | I Am Become Soy                  |   1270 |  172 |   120 |    292 |      58
+     126 | major      | Mackermicker                     |   1269 |   67 |    49 |    116 |      57
+     127 | major      | Blue Angel                       |   1269 |   37 |    15 |     52 |      71
+     128 | major      | lth0713                          |   1266 |  112 |    82 |    194 |      57
+     129 | major      | Sofie                            |   1266 |  139 |   106 |    245 |      56
+     130 | major      | jordanfinn23                     |   1265 |  272 |   246 |    518 |      52
+     131 | major      | GALLIC_BUBU                      |   1265 |   49 |    29 |     78 |      62
+     132 | major      | jupidu0815                       |   1264 |  161 |   126 |    287 |      56
+     133 | major      | Dadi                             |   1264 |   62 |    25 |     87 |      71
+     134 | major      | pure.[POPsic]le                  |   1263 |   17 |     1 |     18 |      94
+     135 | major      | j3ffdavidlan3                    |   1262 |  100 |    90 |    190 |      52
+     136 | major      | Kiesel                           |   1258 |  284 |   206 |    490 |      57
+     137 | major      | M. Renard                        |   1258 |   59 |    49 |    108 |      54
+     138 | major      | Moeen                            |   1257 |  583 |   486 |   1069 |      54
+     139 | major      | wind scar 79                     |   1255 |  190 |   151 |    341 |      55
+     140 | major      | Strelok                          |   1255 |   21 |     4 |     25 |      84
+     141 | major      | SSM Launcher                     |   1255 |   12 |     0 |     12 |     100
+     142 | major      | casino52                         |   1254 |  722 |   569 |   1291 |      55
+     143 | major      | SAVING IS CAPITALISM             |   1248 |   36 |    22 |     58 |      62
+     144 | major      | 150603081507                     |   1247 |  232 |   198 |    430 |      53
+     145 | major      | PoliZei                          |   1247 |   21 |     7 |     28 |      75
+     146 | major      | JMD                              |   1247 |  112 |    87 |    199 |      56
+     147 | major      | schwarzmat                       |   1246 |  370 |   304 |    674 |      54
+     148 | major      | GammerGirl                       |   1246 |   14 |     7 |     21 |      66
+     149 | major      | MC RusTy                         |   1244 |   32 |    33 |     65 |      49
+     150 | major      | illbedammeddd                    |   1242 |  126 |    99 |    225 |      56
+     151 | major      | tcmjuk87                         |   1242 |   57 |    35 |     92 |      61
+     152 | major      | clockdrops                       |   1241 |  588 |   467 |   1055 |      55
+     153 | major      | sadone                           |   1241 |  123 |   107 |    230 |      53
+     154 | major      | Burn69                           |   1241 |   14 |     0 |     14 |     100
+     155 | major      | GriffinTamer                     |   1240 |  129 |   104 |    233 |      55
+     156 | major      | PURE_FROG                        |   1240 |   18 |    11 |     29 |      62
+     157 | major      | LooMiS                           |   1239 |   32 |    23 |     55 |      58
+     158 | major      | Hellraiser                       |   1238 |   42 |    41 |     83 |      50
+     159 | major      | kingbeanpro                      |   1236 |  264 |   205 |    469 |      56
+     160 | major      | OnceAgain                        |   1235 |  509 |   401 |    910 |      55
+     161 | major      | lemur turtle gamer               |   1234 |   26 |    17 |     43 |      60
+     162 | major      | RD__RD_xx                        |   1234 |   11 |     0 |     11 |     100
+     163 | major      | ekimlepat                        |   1234 |   11 |     0 |     11 |     100
+     164 | major      | Lunak                            |   1230 |   25 |    16 |     41 |      60
+     165 | major      | KratosleViking                   |   1226 |   28 |    17 |     45 |      62
+     166 | major      | jarrow                           |   1221 |   25 |    24 |     49 |      51
+     167 | major      | SigPi963                         |   1221 |  712 |   697 |   1409 |      50
+     168 | major      | All-Time Greatest Player + AGP   |   1219 |   16 |     9 |     25 |      64
+     169 | major      | KillerKermit                     |   1217 |  314 |   263 |    577 |      54
+     170 | major      | Panzi                            |   1217 |   17 |     8 |     25 |      68
+     171 | major      | milordos                         |   1216 |  126 |   104 |    230 |      54
+     172 | major      | sNilliNs                         |   1216 |  132 |   101 |    233 |      56
+     173 | major      | MechHammer40000                  |   1213 |   32 |     8 |     40 |      80
+     174 | major      | Majestic                         |   1212 |  113 |   102 |    215 |      52
+     175 | major      | Heegu                            |   1211 |   24 |     6 |     30 |      80
+     176 | major      | Alex                             |   1210 |   29 |    16 |     45 |      64
+     177 | major      | SwiftSpear                       |   1209 |  111 |   115 |    226 |      49
+     178 | major      | Axiom                            |   1207 |  698 |   558 |   1256 |      55
+     179 | major      | JoeBob                           |   1206 |   22 |    20 |     42 |      52
+     180 | major      | winstr8                          |   1205 |   32 |    16 |     48 |      66
+     181 | major      | 10alis                           |   1205 |   36 |    23 |     59 |      61
+     182 | major      | Flypower01                       |   1205 |   97 |    91 |    188 |      51
+     183 | major      | TheMadman1313                    |   1204 |   45 |    43 |     88 |      51
+     184 | major      | darkvader91                      |   1203 |  132 |   118 |    250 |      52
+     185 | major      | lars92585                        |   1201 |  258 |   147 |    405 |      63
+     186 | major      | Chap                             |   1200 |   65 |    46 |    111 |      58
+     187 | major      | Spohammer                        |   1195 |  633 |   574 |   1207 |      52
+     188 | major      | onitankx1                        |   1195 |   13 |     2 |     15 |      86
+     189 | major      | AsianPeenusBeatU!                |   1191 |   16 |    10 |     26 |      61
+     190 | major      | qwerty1776                       |   1190 |  189 |   145 |    334 |      56
+     191 | major      | Aezwozere                        |   1187 |   33 |    17 |     50 |      66
+     192 | major      | mateuszppp                       |   1186 |   40 |    30 |     70 |      57
+     193 | major      | ultrafresh                       |   1183 |   24 |    14 |     38 |      63
+     194 | major      | *General*                        |   1183 |   23 |    18 |     41 |      56
+     195 | major      | Elivyndyr                        |   1182 |   11 |     8 |     19 |      57
+     196 | major      | Barbie of Death                  |   1178 |  118 |   110 |    228 |      51
+     197 | major      | WhoCreatedTheSun                 |   1178 |  189 |   170 |    359 |      52
+     198 | major      | gerr                             |   1177 |   17 |     7 |     24 |      70
+     199 | major      | nona_sf_cat                      |   1174 |  130 |   124 |    254 |      51
+     200 | major      | Cashew (CCC)                     |   1172 |   45 |    32 |     77 |      58
