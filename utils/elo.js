@@ -336,10 +336,10 @@ DB.dropTable('leaderboard')
     // apply s3 update
     eloUpdate(3)
   )
-  // .then(res =>
-  //   // apply s4 update
-  //   eloUpdate(4)
-  // )
+  .then(res =>
+    // apply s4 update
+    eloUpdate(4)
+  )
   .catch(err =>
   console.log(err)
 )
