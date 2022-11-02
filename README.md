@@ -90,7 +90,7 @@ docker-compose up -d
 docker exec -it cnc-matches psql -U dbuser cnc-matches
 \i dbsetup.sql;
 # or alternatively this
-psql -h "192.168.99.100" -p "5432" -U "danku" -d "cnc-matches" -f "dbsetup.sql"
+psql -h "localhost" -p "5444" -U "dbuser" -d "cnc-matches" -f "dbsetup.sql"
 # useful command for clearing postgres data ->
 docker rm -f -v cnc-matches
 ```

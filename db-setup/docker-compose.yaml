@@ -8,3 +8,6 @@ services:
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: cnc-matches
+    volumes:
+      # copy the sql script to create tables
+      - ./dbsetup.sql:/docker-entrypoint-initdb.d/dbsetup.sql

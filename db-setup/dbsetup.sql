@@ -1,7 +1,7 @@
 \c cnc-matches
 
 -- for tracking all match data - may contain duplicates
-CREATE TABLE matches(
+CREATE TABLE IF NOT EXISTS matches(
   index serial,
   starttime FLOAT NOT NULL,
   match_duration FLOAT NOT NULL,
@@ -20,14 +20,14 @@ CREATE TABLE matches(
 );
 
 -- for tracking cronjob progress via match totals
-CREATE TABLE totals(
+CREATE TABLE IF NOT EXISTS totals(
   index serial,
   date_inserted timestamp NOT NULL DEFAULT NOW(),
   total INT NOT NULL
 );
 
 -- for quick access to leaderboard
-CREATE TABLE leaderboard(
+CREATE TABLE IF NOT EXISTS leaderboard(
   index serial,
   player_name varchar(255) NOT NULL,
   season INT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE leaderboard(
 );
 
 -- for quick access to specific players match history
-CREATE TABLE elo_history(
+CREATE TABLE IF NOT EXISTS elo_history(
   index serial,
   starttime FLOAT,
   duration FLOAT,

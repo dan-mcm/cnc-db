@@ -1,10 +1,6 @@
 const DB = require('./dbQueries.js');
 const dotenv = require('dotenv').config();
-const { seasonCalculator } = require('./helpers.js');
-const { ladderMapNames } = require('./helpers.js');
-const { customMapNames } = require('./helpers.js');
-const { ladderMapParserS3 } = require('./helpers.js');
-const { ladderMapParserS4 } = require('./helpers.js');
+const { seasonCalculator, ladderMapNames, customMapNames, ladderMapParserS3, ladderMapParserS4 } = require('./helpers.js');
 // const { sampleData } = require('../test-data/singleObject.js');
 // const { data } = require('../test-data/2215to2323.js');
 

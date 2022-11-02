@@ -123,9 +123,9 @@ function overridePlayersLeaderboardPosition(
   played,
   winrate
 ) {
-  console.log(
-    `UPDATE leaderboard SET player_name='${player_name}', season='${season}', rank='${rank}', position='${position}', points='${points}', wins='${wins}', loses='${loses}', played='${played}', winrate='${winrate}' WHERE index=${current_index} and season=${season}`
-  );
+  // console.log(
+  //   `UPDATE leaderboard SET player_name='${player_name}', season='${season}', rank='${rank}', position='${position}', points='${points}', wins='${wins}', loses='${loses}', played='${played}', winrate='${winrate}' WHERE index=${current_index} and season=${season}`
+  // );
   return pool.connect().then((client) => {
     return client
       .query(
