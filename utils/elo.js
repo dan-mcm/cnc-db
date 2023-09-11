@@ -1,6 +1,8 @@
 const dotenv = require('dotenv').config();
 const DB = require('./dbQueries.js');
+const eloUpdateWorker = require('./eloUpdateWorker.js')
 const utf8 = require('utf8');
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 
 function eloCalculator(p1, p2, p1Result) {
   // A p1_result of true means player 1 was winner.
@@ -90,8 +92,9 @@ function dbdataTranslation(dataArray) {
   const output = [];
   dataArray.map((match) => {
     // Default case if we haven't encountered player1 yet...
-    const decodedPlayer1 = utf8.decode(eval("'" + match.player1_name + "'"));
-    const decodedPlayer2 = utf8.decode(eval("'" + match.player2_name + "'"));
+    
+    const decodedPlayer1 = safeDecodeURIComponent(match.player1_name, match, 'dbdataTranslation');
+    const decodedPlayer2 = safeDecodeURIComponent(match.player2_name, match, 'dbdataTranslation');
 
     if (!listedPlayers.includes(decodedPlayer1)) {
       const frontend = {
@@ -210,59 +213,77 @@ function getRank(rank) {
 }
 
 // TODO - add player ids
-function leaderboardUpdate(pool, data, season) {
-  return data.map((player, index) => {
-    const playerName = player.name;
-    const playerPoints = player.current_elo;
-    const wins = player.games.filter((game) => game.result === 'W').length;
-    const loss = player.games.filter((game) => game.result === 'L').length;
-    const played = player.games.length;
-    const winrate = Math.floor((wins / played) * 100);
-    const position = index + 1; // offsetting for 0 index
-    const rank = getRank(position);
+async function leaderboardUpdate(pool, data, season) {
+  console.log('triggering leaderboardUpate');
+  const leaderboardUpdates = data.map(async (player, index) => {
+    try {
+      const playerName = player.name;
+      const playerPoints = player.current_elo;
+      const wins = player.games.filter((game) => game.result === 'W').length;
+      const loss = player.games.filter((game) => game.result === 'L').length;
+      const played = player.games.length;
+      const winrate = Math.floor((wins / played) * 100);
+      const position = index + 1; // offsetting for 0 index
+      const rank = getRank(position);
 
-    DB.getPlayersCurrentLeaderboardIndex(pool, playerName, season)
-      .then((res) => {
-        if (res > 0) {
-          // if player already on leaderboard, overwrite position
-          return DB.overridePlayersLeaderboardPosition(
-            pool,
-            res, // players current index in table
-            playerName,
-            season,
-            rank,
-            position,
-            playerPoints,
-            wins,
-            loss,
-            played,
-            winrate
-          );
-        } else {
-          // if player not on leaderboard, add as new entry
-          return DB.addLeaderboard(
-            pool,
-            playerName,
-            season,
-            rank,
-            position,
-            playerPoints,
-            wins,
-            loss,
-            played,
-            winrate
-          );
-        }
-      })
-      .catch((err) => console.log(err));
+      const res = await DB.getPlayersCurrentLeaderboardIndex(pool, playerName, season);
+
+      if (res > 0) {
+        // If player already on leaderboard, overwrite position
+        return DB.overridePlayersLeaderboardPosition(
+          pool,
+          res, // Player's current index in table
+          playerName,
+          season,
+          rank,
+          position,
+          playerPoints,
+          wins,
+          loss,
+          played,
+          winrate
+        );
+      } else {
+        // If player not on leaderboard, add as a new entry
+        return DB.addLeaderboard(
+          pool,
+          playerName,
+          season,
+          rank,
+          position,
+          playerPoints,
+          wins,
+          loss,
+          played,
+          winrate
+        );
+      }
+    } catch (err) {
+      // Handle errors here or log them
+      console.error('Error in leaderboardUpdate:', err);
+      // You can choose to rethrow the error or continue processing other items
+      // throw err;
+    }
   });
+
+  try {
+    // Wait for all leaderboard updates to complete
+    await Promise.all(leaderboardUpdates);
+    console.log('Leaderboard updates completed.');
+  } catch (error) {
+    // Handle errors that occurred during the updates
+    console.error('Error during leaderboard updates:', error);
+    // You can choose to rethrow the error or handle it as needed
+    // throw error;
+  }
 }
 
 // TODO - add player ids
 function historyUpdate(pool, games, season) {
+  console.log(`Triggering historyUpdate`)
   return games.map((game) => {
-    const decodedPlayer1 = utf8.decode(eval("'" + game.player1_name + "'"));
-    const decodedPlayer2 = utf8.decode(eval("'" + game.player2_name + "'"));
+    const decodedPlayer1 = safeDecodeURIComponent(game.player1_name, game, 'historyUpdate');
+    const decodedPlayer2 = safeDecodeURIComponent(game.player2_name, game, 'historyUpdate');
 
     return DB.addHistory(
       pool,
@@ -286,61 +307,156 @@ function historyUpdate(pool, games, season) {
   });
 }
 
-function eloUpdate(pool, season) {
-  // expect this to return array of objects -> top of which should be most recent starttime
-  return DB.getExistingSeasonEloMatches(pool, season)
-    .then((result) => {
-      const existingMatches = result;
-      let limit = existingMatches[0].starttime; // should be most recent elo game previously stored
-      if (limit === undefined) limit = 0.0;
-      // let starttime = most recent elo game
-      // expect this to only return additional matches
-      return DB.getSpecificSeasonMatches(pool, season, limit).then((res) => {
-        // update elo history (newMatches, existingElo)
-        const eloAddition = eloCalculationsRawRevised(res, existingMatches);
-        historyUpdate(pool, eloAddition, season);
-        const translatedData = dbdataTranslation(eloAddition).sort((a, b) =>
-          a.current_elo > b.current_elo ? -1 : 1
-        );
+async function eloUpdate(pool, season) {
+  console.log(`Starting eloUpdate for: ${season}`)
+  try {
+    let limit = 0.0;
+    const existingMatches = await DB.getExistingSeasonEloMatches(pool, season);
+    
+    if (existingMatches.length === 0) {
+      console.log('No existing matches found for season', season);
+      // return;
+    } else {
+      limit = existingMatches[0].starttime || 0.0;
+    }
 
-        // update leaderboard ✔️
-        leaderboardUpdate(pool, translatedData, season);
-      });
-    })
-    .then(() => console.log(`Starting elo update for season ${season}`))
-    .catch((e) => {
-      console.log(e.stack);
-      client.release();
-    });
-}
+    // Check if the client is already released before releasing it
+    // if (client && !client._ending) {
+    //   client.release();
+    // }
 
-// based on current time, determining what season to use
-function seasonalUpdates(pool) {
-  // 2021 months
-  const jan = 1609459200;
-  const apr = 1617235200;
-  const july = 1625097600;
-  const oct = 1633046400;
-  // 2022 months
-  const jan2 = 1640995200;
+    const res = await DB.getSpecificSeasonMatches(pool, season, limit);
+    
+    const eloAddition = eloCalculationsRawRevised(res, existingMatches);
 
-  const starttime = Date.now() / 1000;
-
-  if (starttime >= jan2) return eloUpdate(pool, 8);
-  if (starttime >= oct && starttime < jan2) return eloUpdate(pool, 7);
-  if (starttime >= july && starttime < oct) return eloUpdate(pool, 6);
-  if (starttime >= apr && starttime < july) return eloUpdate(pool, 5);
-  if (starttime > jan && starttime < apr) {
-    return Promise.all([eloUpdate(pool, 4), eloUpdate(pool, 3)]).then(() =>
-      console.log('Elo & Leaderboard Table Updates Complete.')
+    historyUpdate(pool, eloAddition, season);
+    
+    const translatedData = dbdataTranslation(eloAddition).sort((a, b) =>
+      a.current_elo > b.current_elo ? -1 : 1
     );
+
+    leaderboardUpdate(pool, translatedData, season);
+    // client.release();
+    // console.log(`Starting elo update for season ${season}`);
+  } catch (error) {
+    console.log(`error in eloUpdate function: ${error}`)
+    console.error(error.stack);
+    // client.release();
   }
 }
 
-function regenerateEloTables(pool) {
-  return seasonalUpdates(pool);
+function getSeasonFromDate(date) {
+  // Define the start dates for each season as Unix timestamps
+  // these are obtainable via the leaderboard list query endpoint
+  const seasonStartDates = [
+    { season: 14, startDate: 1693522801 }, // September 2023 // 2023-09-01T00:00:01.442857
+    { season: 13, startDate: 1685574000 }, // June 2023  // 2023-06-01T00:00:00.29734
+    { season: 12, startDate: 1677628799 }, // March 2023 // 2023-02-28T23:59:59.978612
+
+    { season: 11, startDate: 1669852801 }, // December 2022 // 2022-12-01T00:00:01.204621
+    { season: 10, startDate: 1661986800 }, // September 2022 // 2022-09-01T00:00:00.134442
+    { season: 9, startDate: 1654037999 }, // June 2022 // 2022-05-31T23:59:59.790186
+    { season: 8, startDate: 1646092800 }, // March 2022 // 2022-03-01T00:00:00.525261
+
+    { season: 7, startDate: 1638316800 }, // December 2021 // 2021-12-01T00:00:00.475807
+    { season: 6, startDate: 1630450799 }, // September 2021 // 2021-08-31T23:59:59.985442
+    { season: 5, startDate: 1622502001 }, // June 2021 // 2021-06-01T00:00:01.108728
+    { season: 4, startDate: 1615900791 }, // March 2021 // 2021-03-16T13:19:51.430553
+
+    // Pre season-4 logic dicey... needs to be investigated manually...
+    { season: 3, startDate: 1609459200 }, // January 2021 // 2020-09-17T12:34:19.147524 2021-03-16T13:19:51.430553
+    { season: 2, startDate: 1601510400 }, // October 2020// 2020-08-10T18:13:02.544681 
+    { season: 1, startDate: 1593561600 }, // July 2020 // 2020-08-06T17:57:34.788946
+  ];
+
+  // Iterate through the start dates to find the current season
+  for (const seasonInfo of seasonStartDates) {
+    if (date >= seasonInfo.startDate) {
+      return seasonInfo.season;
+    }
+  }
+
+  // Default to the latest season if none of the start dates match
+  return seasonStartDates[seasonStartDates.length - 1].season;
 }
 
+// based on current time, determining what season to use
+async function seasonalUpdates() {
+
+  const currentSeason = getSeasonFromDate(Date.now() / 1000);
+  console.log(`Seasonal Updates current season value: ${currentSeason}`)
+  
+  const pool = DB.createPool();
+  const client = await pool.connect();
+
+  // for(let season=1; season<=currentSeason; season++){
+  //   eloUpdate(pool, season, client);
+  // }
+  eloUpdate(pool, 14, client);
+}
+
+// async function seasonalUpdates() {
+//   const currentSeason = getSeasonFromDate(Date.now() / 1000);
+//   const workerPromises = [];
+
+//   for (let season = 1; season <= currentSeason; season++) {
+//     const worker = new Worker(`${__dirname}/eloUpdateWorker.js`, {
+//       workerData: season },
+//     );
+
+//     const workerPromise = new Promise((resolve, reject) => {
+//       worker.on('message', (message) => {
+//         console.log(message);
+//         resolve();
+//       });
+//       worker.on('error', (error) => {
+//         console.error(error);
+//         reject(error);
+//       });
+//       worker.on('exit', (code) => {
+//         if (code !== 0) {
+//           reject(new Error(`Worker stopped with exit code ${code}`));
+//         }
+//       });
+//     });
+
+//     workerPromises.push(workerPromise);
+//   }
+
+//   await Promise.all(workerPromises);
+// }
+
+function regenerateEloTables() {
+  return seasonalUpdates();
+}
+
+function safeDecodeURIComponent(uriComponent, all, debug) {
+  
+  try {
+    if (typeof uriComponent !== 'string') {
+      console.log(JSON.stringify(all))
+      // Handle cases where uriComponent is not a string
+      console.error('URI component is not a string:', uriComponent);
+      console.log(`debug: ${debug}`)
+      return ''; // Return a default value or an empty string
+    }
+
+    // Replace invalid characters with valid ones
+    const sanitizedComponent = uriComponent
+      .replace(/[^\w\d\-_.!~*'()]/g, '_')
+      .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
+
+    // Decode the sanitized component
+    return decodeURIComponent(sanitizedComponent);
+  } catch (error) {
+    // Handle URI decoding errors
+    console.error('Error decoding URI component:', error);
+    return ''; // Return a default value or an empty string
+  }
+}
+
+
 module.exports = {
-  regenerateEloTables
+  regenerateEloTables,
+  eloUpdate
 };

@@ -1,7 +1,9 @@
-const { Pool } = require('pg');
+const { Pool} = require('pg');
 const dotenv = require('dotenv').config();
 
 // let pool = createPool()
+let addMatchCounterSuccess = 0;
+let addMatchCounterFailure = 0;
 
 function createPool() {
   let pool;
@@ -27,6 +29,7 @@ function createPool() {
 
   pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
+    console.log('createPool() Error.')
     process.exit(-1);
   });
 
@@ -43,13 +46,13 @@ function getAllMatches(pool) {
       })
       .catch((err) => {
         client.release();
+        console.log('getAllMatches() Error.')
         console.log(err.stack);
       });
   });
 }
 
 function getSpecificSeasonMatches(pool, season, limit) {
-  console.log(`LIMIT DEBUG: ${limit}`);
   return pool.connect().then((client) => {
     return client
       .query(
@@ -61,21 +64,30 @@ function getSpecificSeasonMatches(pool, season, limit) {
       })
       .catch((err) => {
         client.release();
+        console.log('getSpecificSeasonMatches() Error.')
         console.log(err.stack);
       });
   });
 }
 
 function getLatestTotal(pool) {
+  console.log(`Fetching Latest Total...`)
   return pool.connect().then((client) => {
     return client
       .query('SELECT total FROM totals ORDER BY date_inserted DESC LIMIT 1')
       .then((res) => {
         client.release();
-        return res.rows[0].total;
+        const latestTotal = res.rows[0]?.total || 0; // Using optional chaining and providing a default value
+        console.log(`Found latest total value of: ${latestTotal}`)
+        return latestTotal;
       })
       .catch((err) => {
-        client.release();
+        try {
+          client.release();
+        } catch (error) {
+          console.log('getLatestTotal() Error.')
+          console.error('Error releasing client:', error);
+        }
         console.log(err.stack);
       });
   });
@@ -94,17 +106,30 @@ function addLeaderboard(
   winrate
 ) {
   return pool.connect().then((client) => {
+    const query = {
+      text: `INSERT INTO leaderboard (player_name, season, rank, position, points, wins, loses, played, winrate)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      values: [
+        player_name,
+        season,
+        rank,
+        position,
+        points,
+        wins,
+        loses,
+        played,
+        winrate
+      ],
+    };
     return client
-      .query(
-        `INSERT INTO leaderboard (player_name, season, rank, position, points, wins, loses, played, winrate)
-          VALUES ('${player_name}', '${season}', '${rank}', '${position}', '${points}', '${wins}', '${loses}', '${played}', '${winrate}')`
-      )
+      .query(query)
       .then((res) => {
         client.release();
         return res;
       })
       .catch((err) => {
         client.release();
+        console.log('addLeaderboard() Error.')
         console.log(err.stack);
       });
   });
@@ -137,6 +162,7 @@ function overridePlayersLeaderboardPosition(
       })
       .catch((err) => {
         client.release();
+        console.log('overridePlayersleaderboardPosition() Error.')
         console.log(err.stack);
       });
   });
@@ -157,6 +183,7 @@ function getPlayersCurrentLeaderboardIndex(pool, name, season) {
       })
       .catch((err) => {
         client.release();
+        console.log('getPlayersCurrentLeaderboardIndex() Error.')
         console.log(err.stack);
       });
   });
@@ -172,6 +199,7 @@ function getExistingSeasonEloMatches(pool, season) {
       })
       .catch((err) => {
         client.release();
+        console.log('getExistingSeasonEloMatches() Error.')
         console.log(err.stack);
       });
   });
@@ -194,18 +222,42 @@ function addMatches(
   replay,
   season
 ) {
+  const query = {
+    text: `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+    values: [
+      starttime,
+      matchDuration,
+      player1_id,
+      player1Name,
+      player1Faction,
+      player1Random,
+      player2_id,
+      player2Name,
+      player2Faction,
+      player2Random,
+      result,
+      map,
+      replay,
+      season,
+    ],
+  };
+
   return pool.connect().then((client) => {
     return client
-      .query(
-        `INSERT INTO matches (starttime, match_duration, player1_id, player1_name, player1_faction, player1_random, player2_id, player2_name, player2_faction, player2_random, result, map, replay, season)
-          VALUES ('${starttime}', '${matchDuration}', '${player1_id}', '${player1Name}', '${player1Faction}', '${player1Random}', '${player2_id}', '${player2Name}', '${player2Faction}', '${player2Random}', '${result}', '${map}', '${replay}', '${season}')`
-      )
+      .query(query)
       .then((res) => {
+        addMatchCounterSuccess += 1
+        console.log(`successful addMatch write - count ${addMatchCounterSuccess}`)
         client.release();
         return res;
       })
       .catch((err) => {
+        addMatchCounterFailure += 1;
+        console.log(`failed write count - count ${addMatchCounterSuccess}`)
+
         client.release();
+        console.log('addMatches() Error.')
         console.log(err.stack);
       });
   });
@@ -243,6 +295,7 @@ function addTotal(pool, total) {
       })
       .catch((err) => {
         client.release();
+        console.log('addTotal() Error.')
         console.log(err.stack);
       });
   });
@@ -345,53 +398,78 @@ function addHistory(
   result,
   season
 ) {
+  console.log(
+    `Inserting into elo_history:
+    - pool: ${pool}
+    - starttime: ${starttime}
+    - matchDuration: ${matchDuration}
+    - playerName: ${playerName}
+    - playerFaction: ${playerFaction}
+    - playerRandom: ${playerRandom}
+    - playerExistingElo: ${playerExistingElo}
+    - playerNewElo: ${playerNewElo}
+    - opponentName: ${opponentName}
+    - opponentFaction: ${opponentFaction}
+    - opponentRandom: ${opponentRandom}
+    - opponentExistingElo: ${opponentExistingElo}
+    - opponentNewElo: ${opponentNewElo}
+    - map: ${map}
+    - replay: ${replay}
+    - result: ${result}
+    - season: ${season}`
+  );
+
   return pool.connect().then((client) => {
+
+    const query = {
+      text: `INSERT INTO elo_history (
+        starttime,
+        duration,
+        player,
+        player_faction,
+        player_random,
+        player_existing_elo,
+        player_new_elo,
+        opponent,
+        opponent_faction,
+        opponent_random,
+        opponent_existing_elo,
+        opponent_new_elo,
+        map,
+        replay,
+        result,
+        season)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+      values: [
+        starttime,
+        matchDuration,
+        playerName,
+        playerFaction,
+        playerRandom,
+        playerExistingElo,
+        playerNewElo,
+        opponentName,
+        opponentFaction,
+        opponentRandom,
+        opponentExistingElo,
+        opponentNewElo,
+        map,
+        replay,
+        result,
+        season
+      ],
+    };
+
     return client
-      .query(
-        `INSERT INTO elo_history (
-            starttime,
-            duration,
-            player,
-            player_faction,
-            player_random,
-            player_existing_elo,
-            player_new_elo,
-            opponent,
-            opponent_faction,
-            opponent_random,
-            opponent_existing_elo,
-            opponent_new_elo,
-            map,
-            replay,
-            result,
-            season)
-          VALUES (
-            '${starttime}',
-            '${matchDuration}',
-            '${playerName}',
-            '${playerFaction}',
-            '${playerRandom}',
-            '${playerExistingElo}',
-            '${playerNewElo}',
-            '${opponentName}',
-            '${opponentFaction}',
-            '${opponentRandom}',
-            '${opponentExistingElo}',
-            '${opponentNewElo}',
-            '${map}',
-            '${replay}',
-            '${result}',
-            '${season}'
-          )`
-      )
+      .query(query)
       .then((res) => {
-        client.release();
+        console.log('addHistory() Success')
         return res;
       })
       .catch((err) => {
+        console.log('addHistory() Error.')
         console.log(err.stack);
-        client.release();
-      });
+      })
   });
 }
 
