@@ -1,20 +1,40 @@
-// assumption that starttime is greater than jan 1st 2021 by default
-function seasonCalculator(starttime) {
-  // 2021 months
-  // const jan = 1609459200;
-  const apr = 1617235200;
-  const july = 1625097600;
-  const oct = 1633046400;
-  // 2022 months
-  const jan2 = 1640995200;
+function seasonCalculator(date) {
+  // Define the start dates for each season as Unix timestamps
+  // these are obtainable via the leaderboard list query endpoint
+  const seasonStartDates = [
+    { season: 14, startDate: 1693522801 }, // September 2023 // 2023-09-01T00:00:01.442857
+    { season: 13, startDate: 1685574000 }, // June 2023  // 2023-06-01T00:00:00.29734
+    { season: 12, startDate: 1677628799 }, // March 2023 // 2023-02-28T23:59:59.978612
 
-  if (starttime < apr) return 3;
-  // skipping 4 as used for our custom-map season
-  if (starttime < july) return 5;
-  if (starttime < oct) return 6;
-  if (starttime < jan2) return 7;
-  // placeholder defaulting to season 8
-  if (starttime > jan2) return 8;
+    { season: 11, startDate: 1669852801 }, // December 2022 // 2022-12-01T00:00:01.204621
+    { season: 10, startDate: 1661986800 }, // September 2022 // 2022-09-01T00:00:00.134442
+    { season: 9, startDate: 1654037999 }, // June 2022 // 2022-05-31T23:59:59.790186
+    { season: 8, startDate: 1646092800 }, // March 2022 // 2022-03-01T00:00:00.525261
+
+    { season: 7, startDate: 1638316800 }, // December 2021 // 2021-12-01T00:00:00.475807
+    { season: 6, startDate: 1630450799 }, // September 2021 // 2021-08-31T23:59:59.985442
+    { season: 5, startDate: 1622502001 }, // June 2021 // 2021-06-01T00:00:01.108728
+    { season: 4, startDate: 1615900791 }, // March 2021 // 2021-03-16T13:19:51.430553
+
+    // Pre season-4 logic dicey... needs to be investigated manually...
+    { season: 3, startDate: 1609459200 }, // January 2021 // 2020-09-17T12:34:19.147524 2021-03-16T13:19:51.430553
+    { season: 2, startDate: 1601510400 }, // October 2020// 2020-08-10T18:13:02.544681 
+    { season: 1, startDate: 1593561600 }, // July 2020 // 2020-08-06T17:57:34.788946
+  ];
+
+  // Iterate through the start dates to find the current season
+  for (const seasonInfo of seasonStartDates) {
+    if (date >= seasonInfo.startDate) {
+      console.log(`Received value: ${date} and assigning it to season ${seasonInfo.startDate}`)
+
+      return seasonInfo.season;
+    }
+
+  }
+  console.log(`Received value: ${date} and assigning it to default: ${seasonStartDates[seasonStartDates.length - 1].season}`)
+
+  // Default to the latest season if none of the start dates match
+  return seasonStartDates[seasonStartDates.length - 1].season;
 }
 
 // official season 3 map names

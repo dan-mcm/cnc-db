@@ -4,6 +4,8 @@ const { seasonCalculator, ladderMapNames, customMapNames, ladderMapParserS3, lad
 // const { sampleData } = require('../test-data/singleObject.js');
 // const { data } = require('../test-data/2215to2323.js');
 
+let addMatchCounter = 0;
+
 function dataUploadFilter(pool, apiMatches) {
   // console.log(`ENTERED DATA UPLOAD FILTER`)
   apiMatches.matches.map((singleMatch) => {
@@ -12,8 +14,8 @@ function dataUploadFilter(pool, apiMatches) {
     if (
       singleMatch.extramatchsettings &&
       singleMatch.extramatchsettings.product_type === 'TD' &&
-      // 1st Jan 2021
-      singleMatch.starttime > 1609459200 &&
+      // was previously 1st Jan 2021 - now we're scraping everything...
+      // singleMatch.starttime > 1609459200 &&
       singleMatch.names.length === 2 &&
       singleMatch.matchname === '1v1 QM' &&
       ladderMapNames.some((map) => singleMatch.mapname.includes(map))
@@ -42,7 +44,8 @@ function dataUploadFilter(pool, apiMatches) {
       const replay = singleMatch.cdnurl;
 
       // 2021 Season Resets
-      const season = seasonCalculator(singleMatch.starttime);
+      let season = seasonCalculator(singleMatch.starttime);
+      console.log(`In dataUpload Filter, checking starttime of match: ${singleMatch.starttime} and assigning it to season ${season}`)
 
       // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
       DB.addMatches(
@@ -64,63 +67,63 @@ function dataUploadFilter(pool, apiMatches) {
       );
     }
 
-    // season 4
+    // season 4 - for custom ladder
     // if game is TD && starttime > 1/1/21 && mapname matches approved maps && num players = 2
-    if (
-      singleMatch.extramatchsettings &&
-      singleMatch.extramatchsettings.product_type === 'TD' &&
-      // 1st Jan 2021
-      singleMatch.starttime > 1609459200 &&
-      singleMatch.names.length === 2 &&
-      customMapNames.some((map) => singleMatch.mapname.includes(map))
-    ) {
-      //console.log(Object.keys(singleMatch))
-      const { starttime } = singleMatch;
-      const matchDuration = singleMatch.matchduration;
-      const player1Name = singleMatch.names[0];
+    // if (
+    //   singleMatch.extramatchsettings &&
+    //   singleMatch.extramatchsettings.product_type === 'TD' &&
+    //   // 1st Jan 2021
+    //   singleMatch.starttime > 1609459200 &&
+    //   singleMatch.names.length === 2 &&
+    //   customMapNames.some((map) => singleMatch.mapname.includes(map))
+    // ) {
+    //   //console.log(Object.keys(singleMatch))
+    //   const { starttime } = singleMatch;
+    //   const matchDuration = singleMatch.matchduration;
+    //   const player1Name = singleMatch.names[0];
 
-      const player1TeamName = singleMatch.teams[0];
-      const player2TeamName = singleMatch.teams[1];
+    //   const player1TeamName = singleMatch.teams[0];
+    //   const player2TeamName = singleMatch.teams[1];
 
-      const player1TeamID = singleMatch.players[0];
-      const player2TeamID = singleMatch.players[1];
+    //   const player1TeamID = singleMatch.players[0];
+    //   const player2TeamID = singleMatch.players[1];
 
-      const player1Faction =
-        singleMatch.factions[player1TeamName] === 0 ? 'GDI' : 'Nod';
-      const player1Random = singleMatch.wasrandom[player1TeamName] ? 1 : 0;
+    //   const player1Faction =
+    //     singleMatch.factions[player1TeamName] === 0 ? 'GDI' : 'Nod';
+    //   const player1Random = singleMatch.wasrandom[player1TeamName] ? 1 : 0;
 
-      const player2Name = singleMatch.names[1];
-      const player2Faction =
-        singleMatch.factions[player2TeamName] === 0 ? 'GDI' : 'Nod';
-      const player2Random = singleMatch.wasrandom[player2TeamName] ? 1 : 0;
+    //   const player2Name = singleMatch.names[1];
+    //   const player2Faction =
+    //     singleMatch.factions[player2TeamName] === 0 ? 'GDI' : 'Nod';
+    //   const player2Random = singleMatch.wasrandom[player2TeamName] ? 1 : 0;
 
-      const winningTeamID = singleMatch.winningteamid;
+    //   const winningTeamID = singleMatch.winningteamid;
 
-      const result =
-        winningTeamID === player1TeamName ? player1Name : player2Name;
+    //   const result =
+    //     winningTeamID === player1TeamName ? player1Name : player2Name;
 
-      const map = ladderMapParserS4(singleMatch.mapname); // converting to human readable
-      const replay = singleMatch.cdnurl;
-      const season = 4; //hardcoded
-      // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
-      DB.addMatches(
-        pool,
-        starttime,
-        matchDuration,
-        player1TeamID,
-        player1Name,
-        player1Faction,
-        player1Random,
-        player2TeamID,
-        player2Name,
-        player2Faction,
-        player2Random,
-        result,
-        map,
-        replay,
-        season
-      );
-    }
+    //   const map = ladderMapParserS4(singleMatch.mapname); // converting to human readable
+    //   const replay = singleMatch.cdnurl;
+    //   const season = 4; //hardcoded
+    //   // console.log(`DEBUGGING VALUES ${starttime} ${matchDuration}, ${player1Name}, ${player2Name}, ${player2Faction}, ${result}, ${map}, ${replay}, ${season}`)
+    //   DB.addMatches(
+    //     pool,
+    //     starttime,
+    //     matchDuration,
+    //     player1TeamID,
+    //     player1Name,
+    //     player1Faction,
+    //     player1Random,
+    //     player2TeamID,
+    //     player2Name,
+    //     player2Faction,
+    //     player2Random,
+    //     result,
+    //     map,
+    //     replay,
+    //     season
+    //   );
+    // }
   });
 }
 
